@@ -45,19 +45,24 @@ pnpm install -D eslint-plugin-import eslint-plugin-vue eslint-plugin-node eslint
 # 更改 .eslintrc.cjs
 # 增加 .eslintignore
 
+# 补充功能1  package.json
+"scripts": {
+   # ...
+   "lint": "eslint src",
+   "fix": "eslint src --fix",
+},
+
 pnpm add sass sass-loader stylelint postcss postcss-scss postcss-html stylelint-config-prettier stylelint-config-recess-order stylelint-config-recommended-scss stylelint-config-standard stylelint-config-standard-vue stylelint-scss stylelint-order stylelint-config-standard-scss -D
 
 # 增加 .stylelintrc.cjs
 # 增加 .stylelintignore
 
-# 补充功能  package.json
+# 补充功能2  package.json
 "scripts": {
    # ...
-   "lint": "eslint src",
-    "fix": "eslint src --fix",
-    "format": "prettier --write \"./**/*.{html,vue,ts,js,json,md}\"",
-    "lint:eslint": "eslint src/**/*.{ts,vue} --cache --fix",
-    "lint:style": "stylelint src/**/*.{css,scss,vue} --cache --fix"
+   "format": "prettier --write \"./**/*.{html,vue,ts,js,json,md}\"",
+   "lint:eslint": "eslint src/**/*.{ts,vue} --cache --fix",
+   "lint:style": "stylelint src/**/*.{css,scss,vue} --cache --fix",
 },
 
 pnpm install -D husky
@@ -75,4 +80,58 @@ git push
 
 npx husky-init
 
+# 更改 .husky/pre-commit
+
+# ......
+pnpm run format
+
+
+pnpm add @commitlint/config-conventional @commitlint/cli -D
+
+# 增加 commitlint.config.cjs
+
+# 补充功能3  package.json
+"scripts": {
+   # ...
+   "commitlint": "commitlint --config commitlint.config.cjs -e -V"
+},
+
+npx husky add .husky/commit-msg
+
+# 更改 .husky/commit-msg
+
+# ......
+pnpm commitlint
+
+# 新增 scripts/preinstall.js
+
+# 补充功能4  package.json
+"scripts": {
+   # ...
+   "preinstall": "node ./scripts/preinstall.js"
+},
+```
+
+```ts
+// 配置路径别名
+
+// vite.config.ts
+// export default defineConfig({
+//   plugins: [vue()],
+  resolve: {
+    alias: {
+      "@": path.resolve("./src")
+    }
+  },
+// })
+
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": "./", // 解析非相对模块的基地址，默认是当前目录
+    "paths": { //路径映射，相对于baseUrl
+      "@/*": ["src/*"]
+    }
+  }
+}
 ```
