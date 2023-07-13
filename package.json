@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --open",
+    "dev": "vite --host 0.0.0.0 --open",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src",
@@ -17,7 +17,9 @@
     "preinstall": "node ./scripts/preinstall.js"
   },
   "dependencies": {
-    "vue": "^3.2.47"
+    "normalize.css": "^8.0.1",
+    "vue": "^3.2.47",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.7",

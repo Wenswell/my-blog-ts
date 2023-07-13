@@ -1,0 +1,66 @@
+@import "./_variables.scss";
+
+/*
+✅白底黑字：正常
+✅绿底白字：已激活
+⭕白底绿字：hover
+
+单独：深背景、浅色背景 -=> 边框
+❌白底绿字+浅色框：hover小标签
+❌白底黑字+绿色框：hover大块
+*/
+
+@mixin white_bg_black_txt() {
+  // [data-theme="light"] & {
+    background-color: $light-bg;
+    color: $light-fc;
+  // }
+  // [data-theme="dark"] & {
+  //   background-color: $dark-bg;
+  //   color: $dark-fc;
+  // }
+  .dark & {
+    background-color: $dark-bg;
+    color: $dark-fc;
+  }
+}
+
+@mixin white_bg_prime_txt() {
+  // [data-theme="light"] & {
+    background-color: $light-bg;
+    color: $light-prime-clr;
+  // }
+  [data-theme="dark"] & {
+    background-color: $dark-bg;
+    color: $dark-prime-clr;
+  }
+}
+
+@mixin prime_bg_white_txt() {
+  // [data-theme="light"] & {
+    background-color: $light-prime-clr;
+    color: $light-bg;
+  // }
+  [data-theme="dark"] & {
+    background-color: $dark-prime-clr;
+    color: $dark-bg;
+  }
+}
+
+@mixin prime_border() {
+  // [data-theme="light"] & {
+    border-color: $light-prime-clr;
+  // }
+  [data-theme="dark"] & {
+    border-color: $dark-prime-clr;
+  }
+}
+
+@mixin prime_mild_border() {
+  // [data-theme="light"] & {
+    border-color: $light-prime-clr-mild;
+  // }
+  [data-theme="dark"] & {
+    border-color: $dark-prime-clr-mild;
+  }
+}

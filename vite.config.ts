@@ -10,4 +10,14 @@ export default defineConfig({
       '@': path.resolve('./src'),
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        javascriptEnabled: true,
+        // additionalData: '@import "./src/assets/styles/_variables.scss";',
+        additionalData: '@import "./src/assets/styles/_theme.scss";',
+        // additionalData: '@import "./src/assets/styles/index.scss";',
+      },
+    },
+  },
 })

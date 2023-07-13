@@ -1,0 +1,6 @@
+// @import "./theme.scss";
+@import "./_variables.scss";
+
+html.dark {
+  color-scheme: dark;
+}
