@@ -1,7 +1,9 @@
 <template>
-  <div>home</div>
+  <Header />
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Header from '@/components/Header.vue'
+</script>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped></style>

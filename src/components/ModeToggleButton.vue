@@ -89,10 +89,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
+$btn-width: 2.25em;
+$btn-height: 1.25em;
+
 button.change-mode {
-  zoom: 10;
-  width: 2em;
-  height: 1em;
+  zoom: 1.25;
+  width: $btn-width;
+  height: $btn-height;
   border-radius: 1em;
   cursor: pointer;
   position: relative;
@@ -103,17 +106,15 @@ button.change-mode {
   border: 1px solid gray;
   background-color: hsl(0, 0%, 95%);
 
-  // &[aria-checked="false"] {
-
   &:active > svg {
-    left: 0.15em;
-    filter: blur(0.02em);
+    left: 0.15 * $btn-height;
+    filter: blur(0.05em);
     transition: left 300ms;
   }
 
   & > svg {
     position: absolute;
-    left: 0.05em;
+    left: 0.05 * $btn-height;
     background-color: white;
     border-radius: 50%;
     transition:
@@ -125,29 +126,27 @@ button.change-mode {
       opacity: 1;
       z-index: 1;
       fill: black;
-      width: 0.6em;
-      padding: 0.1em;
+      width: 0.6 * $btn-height;
+      padding: 0.1 * $btn-height;
     }
 
     &.mode-moon {
       opacity: 0;
       z-index: -1;
       fill: white;
-      width: 0.8em;
+      width: 0.8 * $btn-height;
     }
   }
-
-  // }
 
   &[aria-checked='true'] {
     background-color: hsl(0, 0%, 20%);
 
     &:active > svg {
-      left: 0.85em;
+      left: 0.75 * $btn-height;
     }
 
     & > svg {
-      left: 1em;
+      left: 0.85 * $btn-height;
       background-color: black;
 
       &.mode-sun {
