@@ -1,0 +1,35 @@
+// @import "./theme.scss";
+@import "./_variables.scss";
+
+html.dark {
+  color-scheme: dark;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  @include white_bg_black_txt;
+  text-decoration: none;
+}
+
+a._under {
+  transition: background-size 350ms;
+  // background: linear-gradient(0deg, slateblue, slateblue) no-repeat right bottom / 0 2px;
+  background-image: linear-gradient(0deg, rgba($light-prime-clr, 0.75), rgba($light-prime-clr, 0.75));
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: 0 $gap-s;
+}
+.dark a._under {
+  background-image: linear-gradient(0deg, rgba($dark-prime-clr, 0.75), rgba($dark-prime-clr, 0.75));
+}
+
+a._under:where(:hover, :focus-visible) {
+  background-size: 100% $gap-s;
+  background-position-x: left;
+}

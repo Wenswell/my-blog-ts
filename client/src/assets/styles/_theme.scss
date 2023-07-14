@@ -1,0 +1,106 @@
+@import "./_variables.scss";
+
+/*
+白底黑字  white_bg_black_txt
+白底绿字  white_bg_prime_txt
+绿底白字  prime_bg_white_txt
+浅底绿字  mild_bg_prime_txt
+
+
+
+按钮用 白底绿边框  prime_shadow_white_border
+按钮用 绿底白边框  white_shadow_prime_border
+
+❌black_border
+❌prime_border
+❌prime_mild_border
+
+*/
+
+@mixin white_bg_black_txt() {
+  background-color: $light-bg;
+  // background-color: unset;
+  // color: $light-fc;
+  color: unset;
+  .dark & {
+    // background-color: $dark-bg;
+    background-color: unset;
+    // color: $dark-fc;
+    color: unset;
+  }
+}
+
+@mixin white_bg_prime_txt() {
+  background-color: $light-bg;
+  // background-color: unset;
+  color: $light-prime-clr;
+  .dark & {
+    background-color: $dark-bg;
+    // background-color: unset;
+    color: $dark-prime-clr;
+  }
+}
+
+@mixin prime_bg_white_txt() {
+  background-color: $light-prime-clr;
+  color: $light-bg;
+  .dark & {
+    background-color: $dark-prime-clr;
+    color: $dark-bg;
+  }
+}
+
+@mixin mild_bg_prime_txt() {
+  background-color: $light-prime-clr-mild;
+  color: $light-prime-clr;
+  .dark & {
+    background-color: $dark-prime-clr-mild;
+    color: $dark-prime-clr;
+  }
+}
+
+@mixin __reverse_mild_txt() {
+  color: $dark-prime-clr-mild;
+  .dark & {
+    color: $light-prime-clr-mild;
+  }
+}
+
+@mixin prime_shadow_white_border() {
+  border-color: $light-bg;
+  box-shadow: 0 0 0 2px $light-prime-clr;
+  .dark & {
+    border-color: $dark-bg;
+    box-shadow: 0 0 0 2px $dark-prime-clr;
+  }
+}
+
+@mixin white_shadow_prime_border() {
+  border-color: $light-prime-clr;
+  box-shadow: 0 0 0 2px $light-bg;
+  .dark & {
+    border-color: $dark-prime-clr;
+    box-shadow: 0 0 0 2px $dark-bg;
+  }
+}
+
+// @mixin black_border() {
+//   border-color: $light-fc;
+//   .dark & {
+//     border-color: $dark-fc;
+//   }
+// }
+
+// @mixin prime_border() {
+//   border-color: $light-prime-clr;
+//   .dark & {
+//     border-color: $dark-prime-clr;
+//   }
+// }
+
+// @mixin prime_mild_border() {
+//   border-color: $light-prime-clr-mild;
+//   .dark & {
+//     border-color: $dark-prime-clr-mild;
+//   }
+// }
