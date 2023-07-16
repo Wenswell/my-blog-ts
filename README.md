@@ -7,17 +7,23 @@
 # https://stackoverflow.com/questions/54201658/
 # npm i -g node-gyp
 # npx express-generator-typescript --with-auth "server"
-
-npm install -g express-generator-typescript
-
-npx express-generator-typescript "server"
+# npm install -g express-generator-typescript
+# npx express-generator-typescript "server"
 
 cd server
 
+npm init -y
+echo > index.js
+npm i express
+npm i typescript
+Rename-Item -Path index.js -NewName index.ts
 Remove-Item .\node_modules\ -Recurse
 pnpm import
 pnpm install
-pnpm run dev
+pnpm i @types/express @types/node
+npx tsc --init
+npx tsc
+node .\dist\index.js
 ```
 
 

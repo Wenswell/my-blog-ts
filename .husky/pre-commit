@@ -3,3 +3,9 @@
 
 cd client
 pnpm format
+
+# cd ../_server
+# pnpm tsc
+# pnpm fix
+# pnpm lint
+# pnpm test
