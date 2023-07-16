@@ -1,4 +1,4 @@
-import * as nanoid from "nanoid";
+import * as nanoid from 'nanoid';
 
 // Your alphabet set
 const SIMPLEalphabet = '0123456789abcdefghijklmnopqrstuvwxyz';

@@ -16,7 +16,7 @@ const tagSchema = new Schema({
   count: { type: Number, default: 0 },
   blogList: [{
     type: Schema.Types.ObjectId,
-    ref: 'Blog'
+    ref: 'Blog',
   }],
   createAt: { type: Date, default: new Date() },
 });
@@ -24,15 +24,15 @@ const tagSchema = new Schema({
 tagSchema.virtual('blogs', {
   ref: 'Blog',
   localField: 'blogList',
-  foreignField: '_id'
+  foreignField: '_id',
 });
 
 const Tag = model<Tag>('tag', tagSchema);
 
 
-export const getBlogsByTagName = async (tagName: String) => {
+export const getBlogsByTagName = async (tagName: string) => {
   const tag = await Tag.findOne({ tagName }).populate('blogs');
-  return tag.blogs
+  return tag.blogs;
 };
 
 export const getAllTag = async () => {
@@ -43,14 +43,14 @@ export const addTag = (newName: string) => {
   const newTag = new Tag({
     id: genTagId(),
     tagName: newName,
-    createAt: new Date()
-  })
-  return newTag.save()
-}
+    createAt: new Date(),
+  });
+  return newTag.save();
+};
 
 export const updateTagById = async (
   id: string,
-  newName: string
+  newName: string,
 ) => {
   return Tag.findOneAndUpdate({ id }, { tagName: newName }, { new: true });
 };
@@ -59,20 +59,20 @@ export const deleteTagById = async (id: string) => {
   return Tag.findOneAndDelete({ id });
 };
 
-export function updateTagByTagNameList(BlogObjectId: ObjectId, tagNameList: string[], isRemove: Boolean): void {
-  if (!tagNameList.length) return
+export function updateTagByTagNameList(BlogObjectId: ObjectId, tagNameList: string[], isRemove: boolean): void {
+  if (!tagNameList.length) return;
 
   tagNameList.forEach(async tagName => {
     if (isRemove === false) {
-      const hasTag = await Tag.findOne({ tagName }, { tagName: 1 })
-      if (!hasTag) await addTag(tagName)
+      const hasTag = await Tag.findOne({ tagName }, { tagName: 1 });
+      if (!hasTag) await addTag(tagName);
     }
 
     const ops = isRemove
       ? { $pull: { blogList: BlogObjectId }, $inc: { count: -1 } }
       : { $addToSet: { blogList: BlogObjectId }, $inc: { count: 1 } };
-    await Tag.updateOne({ tagName }, ops)
+    await Tag.updateOne({ tagName }, ops);
 
-  })
+  });
 
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Request, Response } from 'express';
 
 export function notFoundHandler() {
@@ -16,7 +17,7 @@ export function notFoundHandler() {
         method: req.method,
         cookies: req.cookies,
         complete: req.complete,
-      }
+      },
     });
   };
 }

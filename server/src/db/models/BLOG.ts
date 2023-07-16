@@ -1,6 +1,6 @@
-import { Schema, model, Document, ObjectId } from 'mongoose'
+import { Schema, model, Document, ObjectId } from 'mongoose';
 import { genBlogId } from '@/utils/genid';
-import { addTag, Tag, updateTagByTagNameList } from './TAG';
+import { updateTagByTagNameList } from './TAG';
 import { updateCategByCategName } from './CATEGORY';
 
 // 1. 定义接口
@@ -26,7 +26,7 @@ const blogSchema = new Schema({
   content: String,
   postAt: { type: Date, default: Date.now },
   editAt: { type: Date },
-  descImg: String
+  descImg: String,
 });
 
 // 3. 生成模型
@@ -60,20 +60,20 @@ export const addBlog = (params: {
     categoryName: params.categoryName,
     tagNameList: params.tagNameList,
     content: params.content,
-    postAt: new Date()
+    postAt: new Date(),
   });
 
-  updateTagByTagNameList(newBlog._id, newBlog.tagNameList, false)
+  updateTagByTagNameList(newBlog._id as ObjectId, newBlog.tagNameList, false);
 
-  updateCategByCategName(newBlog._id, newBlog.categoryName, false)
+  updateCategByCategName(newBlog._id as ObjectId, newBlog.categoryName, false);
 
   return newBlog.save();
-}
+};
 
 // 更新博客
 export const updateBlogById = async (
   id: string,
-  update: Partial<Blog>
+  update: Partial<Blog>,
 ) => {
   // 1. 查找原博客
   const blog = await Blog.findOne({ id });
@@ -90,27 +90,27 @@ export const updateBlogById = async (
     const toRemoveTagList = oldTags.filter(t => !newTags.includes(t));
     // 4. 更新Tag collection
     if (oldCategName !== newCategName) {
-      updateCategByCategName(blog._id, newCategName, false)
-      updateCategByCategName(blog._id, oldCategName, true)
+      updateCategByCategName(blog._id as ObjectId, newCategName, false);
+      updateCategByCategName(blog._id as ObjectId, oldCategName, true);
     }
-    updateTagByTagNameList(blog._id, toAddTagList, false)
-    updateTagByTagNameList(blog._id, toRemoveTagList, true)
+    updateTagByTagNameList(blog._id as ObjectId, toAddTagList, false);
+    updateTagByTagNameList(blog._id as ObjectId, toRemoveTagList, true);
   }
   // 5. 更新博客
   update.editAt = new Date();
 
   // 6. 返回
   return Blog.updateOne({ id }, update);
-}
+};
 
 
 // 删除博客
 export const deleteBlogById = async (id: string) => {
   const blog = await Blog.findOneAndDelete({ id });
 
-  updateTagByTagNameList(blog._id, blog.tagNameList, true)
+  updateTagByTagNameList(blog._id as ObjectId, blog.tagNameList, true);
 
-  return blog
+  return blog;
 };
 
 

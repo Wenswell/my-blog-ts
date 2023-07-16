@@ -16,7 +16,7 @@ const categorySchema = new Schema({
   count: { type: Number, default: 0 },
   blogList: [{
     type: Schema.Types.ObjectId,
-    ref: 'Blog'
+    ref: 'Blog',
   }],
   createAt: { type: Date, default: new Date() },
 });
@@ -25,7 +25,7 @@ const categorySchema = new Schema({
 categorySchema.virtual('blogs', {
   ref: 'Blog',
   localField: 'blogList',
-  foreignField: '_id'
+  foreignField: '_id',
 });
 
 const Category = model<Category>('Category', categorySchema);
@@ -34,10 +34,10 @@ export const addCateg = (newName: string) => {
   const newCateg = new Category({
     id: genCategoryId(),
     categoryName: newName,
-    createAt: new Date()
-  })
-  return newCateg.save()
-}
+    createAt: new Date(),
+  });
+  return newCateg.save();
+};
 
 export const getAllCateg = async () => {
   return Category.find({});
@@ -45,7 +45,7 @@ export const getAllCateg = async () => {
 
 export const updateCategById = async (
   id: string,
-  newName: string
+  newName: string,
 ) => {
   return Category.findOneAndUpdate({ id }, { categoryName: newName }, { new: true });
 };
@@ -55,17 +55,17 @@ export const deleteCategById = async (id: string) => {
 };
 
 
-export async function updateCategByCategName(BlogObjectId: ObjectId, categoryName: string, isRemove: Boolean): Promise<void> {
-  if (!categoryName) return
+export async function updateCategByCategName(BlogObjectId: ObjectId, categoryName: string, isRemove: boolean): Promise<void> {
+  if (!categoryName) return;
 
   if (isRemove === false) {
-    const hasTag = await Category.findOne({ categoryName }, { categoryName: 1 })
-    if (!hasTag) await addCateg(categoryName)
+    const hasTag = await Category.findOne({ categoryName }, { categoryName: 1 });
+    if (!hasTag) await addCateg(categoryName);
   }
 
   const ops = isRemove
     ? { $pull: { blogList: BlogObjectId }, $inc: { count: -1 } }
     : { $addToSet: { blogList: BlogObjectId }, $inc: { count: 1 } };
-  await Category.updateOne({ categoryName }, ops)
+  await Category.updateOne({ categoryName }, ops);
 
 }

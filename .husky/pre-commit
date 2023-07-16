@@ -4,8 +4,5 @@
 cd client
 pnpm format
 
-# cd ../_server
-# pnpm tsc
-# pnpm fix
-# pnpm lint
-# pnpm test
+cd ../server
+pnpm lint

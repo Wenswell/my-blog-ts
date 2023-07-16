@@ -1,7 +1,15 @@
 import mongoose from 'mongoose';
 
-require('dotenv').config() 
-const { DB_HOST, DB_PORT, DB_NAME } = process.env;
+// load env
+import { config } from 'dotenv';
+config();
+
+// get env variables from parsed config
+const {
+  DB_HOST,
+  DB_PORT,
+  DB_NAME,
+} = config().parsed;
 
 const DB_URI = `mongodb://${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
@@ -10,14 +18,14 @@ export const connect = (success: () => void, error: () => void = () => {
 }) => {
 
   mongoose.connect(DB_URI).then(res => {
-    console.log(`连接至数据库【${res.connections[0].name}】`)
-  })
+    console.log(`连接至数据库【${res.connections[0].name}】`);
+  });
 
   // 使用once防止重复执行
-  mongoose.connection.once('open', () => { success() })
+  mongoose.connection.once('open', () => { success(); });
 
-  mongoose.connection.on('error', () => { error() })
+  mongoose.connection.on('error', () => { error(); });
 
-  mongoose.connection.on('close', () => { console.log('关闭连接') })
+  mongoose.connection.on('close', () => { console.log('关闭连接'); });
 
 };

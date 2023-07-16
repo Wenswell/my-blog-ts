@@ -6,14 +6,14 @@ export function fileRoutes() {
 
   const router = Router();
 
-  router.get('/download', async (req, res) => {
+  router.get('/download', (req, res) => {
     // 获取查询参数中的文件名
-    const fileName = req.query.fileName;
+    const fileName = req.query.fileName as string;
     // 构建文件的完整路径
     const filePath = `${process.cwd()}/public/upload/${fileName}`;
 
     fs.access(filePath, fs.constants.F_OK, (err) => {
-      if (err) res.sendStatus(404)
+      if (err) res.sendStatus(404);
     });
 
     // 使用 res.download() 方法发送文件给客户端进行下载
@@ -29,7 +29,7 @@ export function fileRoutes() {
 
   router.post('/upload', (req, res) => {
 
-    interface FileArray extends Array<Express.Multer.File> { }
+    type FileArray = Array<Express.Multer.File>
 
     // 在 POST 路由句柄中
     const files = req.files as FileArray;
@@ -37,7 +37,7 @@ export function fileRoutes() {
     if (!files) {
       return res.status(400).send({
         code: 400,
-        msg: '上传文件不能为空'
+        msg: '上传文件不能为空',
       });
     }
 
@@ -50,25 +50,25 @@ export function fileRoutes() {
       const ext = file.originalname.substring(lastDotIndex + 1);
 
       // 生成新文件名
-      const newFilename = Date.now() + '.' + ext;
+      const newFilename = Date.now().toString() + '.' + ext;
 
       // 移动并修改文件名
       fs.renameSync(
         path.join(process.cwd(), 'public', 'upload', 'temp', file.filename),
-        path.join(process.cwd(), 'public', 'upload', newFilename)
-      )
+        path.join(process.cwd(), 'public', 'upload', newFilename),
+      );
 
       // 收集文件名用于返回
       // 拼接地址后即可访问
       // eg. http://localhost:3123/upload/1686923848106.jpg
-      fileNameList.push(`upload/${newFilename}`)
+      fileNameList.push(`upload/${newFilename}`);
     }
 
-    console.log("Upload new files", fileNameList)
+    console.log('Upload new files', fileNameList);
     res.status(200).send({
       code: 200,
       msg: 'ok',
-      data: fileNameList
+      data: fileNameList,
     });
 
   });

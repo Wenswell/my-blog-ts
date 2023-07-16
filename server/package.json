@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "npx eslint --ext .ts src/ --fix"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,10 @@
     "@types/module-alias": "^2.0.1",
     "@types/multer": "^1.4.7",
     "@types/node": "^20.4.2",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-node": "^11.1.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"

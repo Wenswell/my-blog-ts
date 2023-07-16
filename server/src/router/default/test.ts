@@ -1,6 +1,4 @@
-import { db } from '@/db/models';
 import { getAllCateg } from '@/db/models/CATEGORY';
-import { user } from '@/db/models/USER';
 import { Router } from 'express';
 
 
@@ -11,8 +9,8 @@ export function testRoutes() {
   router.get('/', async (req, res) => {
 
 
-    const getcatelist = await getAllCateg()
-    console.log("getcatelist", getcatelist)
+    const getcatelist = await getAllCateg();
+    console.log('getcatelist', getcatelist);
 
     res.send(getcatelist);
   });

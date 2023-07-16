@@ -1,14 +1,14 @@
 // module-alias changes the default behavior of require
 // 必须放在最开始
-require('module-alias/register')
+require('module-alias/register');
 // 引入 module-alias 定义路径别名
-import moduleAlias from 'module-alias'
+import moduleAlias from 'module-alias';
 
-moduleAlias.addAlias('@', __dirname)
-moduleAlias.addAlias('@db', __dirname + '/db')
+moduleAlias.addAlias('@', __dirname);
+moduleAlias.addAlias('@db', __dirname + '/db');
 // moduleAlias.addAlias('@utils', __dirname + '/utils')
 // moduleAlias.addAlias('@config', __dirname + '/utils/config')
-moduleAlias.addAlias('@router', __dirname + '/router')
+moduleAlias.addAlias('@router', __dirname + '/router');
 // moduleAlias.addAlias('@public', __dirname + '/public')
 
 import express from 'express';
@@ -34,9 +34,9 @@ app.use(compression());
 // 引入 multer 用于上传文件
 import multer from 'multer';
 // 定义接收上传文件的目录
-const upload = multer({ dest: 'public/upload/temp' })
+const upload = multer({ dest: 'public/upload/temp' });
 // 接收一切上传的文件
-app.use(upload.any())
+app.use(upload.any());
 
 // 导入cors中间件用于实现跨域资源共享  
 import cors from 'cors';
@@ -51,7 +51,7 @@ import router from './router';
 // app.use('/', router());
 app.use(router());
 
-import '@/utils/run-test'
+import '@/utils/run-test';
 
 import http from 'http';
 // 创建http服务器实例
@@ -63,7 +63,7 @@ const handleDBConnect = () => {
   server.listen(PORT, '0.0.0.0', () => {
     console.log('Server running on http://localhost:6333/');
   });
-}
+};
 
 import { connect } from '@/db';
 connect(handleDBConnect);
