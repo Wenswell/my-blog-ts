@@ -61,12 +61,12 @@ $x-width: calc(#{$hbg-height} * 1.4);
 $ani-time: 200ms;
 
 header {
-  height: $gap-xl;
+  // height: $gap-xl;
+  height: calc($hbg-height + $gap + 2px);
   overflow: hidden;
   position: sticky;
   top: 0;
   z-index: 10;
-  @include white_bg_black_txt;
 }
 
 input {
@@ -189,7 +189,7 @@ input:checked:focus-visible {
   @include prime_bg_white_txt;
 
   nav {
-    padding-top: calc(#{$hbg-height} + #{$hbg-margin} + 1rem);
+    padding-top: calc($hbg-height + $hbg-margin + $gap);
   }
 
   ul {
@@ -199,8 +199,8 @@ input:checked:focus-visible {
 
   li {
     list-style: none;
-    height: 1.5em;
-    line-height: 1.5em;
+    height: $gap;
+    line-height: $gap;
     display: flex;
     padding: $gap-s;
   }
@@ -214,18 +214,17 @@ input:checked:focus-visible {
 }
 
 .topbar {
-  padding-bottom: $gap-s;
-
-  box-shadow: 0px 1px 2px 0px hsla(0, 0%, 50%, 0.2);
-
-  z-index: 1;
-  position: absolute;
-  height: $hbg-height;
   width: 100%;
-  margin-top: $hbg-margin;
+  height: $hbg-height;
+  position: absolute;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
   align-items: center;
+  grid-template-columns: 1fr auto 1fr;
+  z-index: 1;
+  padding-block: $gap-s;
+  box-shadow: 0px 1px 2px 0px hsla(0, 0%, 50%, 0.2);
+  // margin-top: $hbg-margin;
+  @include white_bg_black_txt;
 
   .logo {
     font-size: $fz-l;
@@ -256,11 +255,13 @@ input:checked:focus-visible {
   }
 
   header {
+    height: $gap-xl;
     display: grid;
     gap: $gap-s;
     grid-template-columns: minmax($gap-xl, 5vw) 2fr auto minmax($gap-xl, 5vw);
     align-items: center;
     box-shadow: 0px 1px 2px 0px hsla(0, 0%, 50%, 0.2);
+    @include white_bg_black_txt;
 
     .topbar {
       grid-column-start: 2;
@@ -281,7 +282,7 @@ input:checked:focus-visible {
       }
 
       li {
-        margin-block: 1rem;
+        margin-block: $gap;
       }
 
       a {

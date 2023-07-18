@@ -56,12 +56,12 @@ import '@/utils/run-test';
 import http from 'http';
 // 创建http服务器实例
 const server = http.createServer(app);
-const PORT = 6333;
+const PORT = 7333;
 // 监听8080端口
 
 const handleDBConnect = () => {
   server.listen(PORT, '0.0.0.0', () => {
-    console.log('Server running on http://localhost:6333/');
+    console.log(`Server running on http://192.168.1.5:${PORT}/`);
   });
 };
 
