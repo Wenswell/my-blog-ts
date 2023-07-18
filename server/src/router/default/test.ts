@@ -1,4 +1,3 @@
-import { getAllCateg } from '@/db/models/CATEGORY';
 import { Router } from 'express';
 
 
@@ -6,13 +5,10 @@ export function testRoutes() {
 
   const router = Router();
 
-  router.get('/', async (req, res) => {
+  router.get('/', (req, res) => {
 
 
-    const getcatelist = await getAllCateg();
-    console.log('getcatelist', getcatelist);
-
-    res.send(getcatelist);
+    res.send('test');
   });
 
   router.post('/', (req, res) => {
