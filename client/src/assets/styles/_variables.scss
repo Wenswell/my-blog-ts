@@ -7,6 +7,7 @@ $fz-xxl: 2rem;
 
 /* 间距 */
 $gap-px: 2px;
+$gap-xs: 0.25rem;
 $gap-s: 0.5rem;
 $gap: 1rem;
 $gap-l: 2rem;
@@ -14,18 +15,18 @@ $gap-xl: 3rem;
 
 /* 主题配色 */
 $light-prime-clr: hsl(148, 57%, 42%);
-$light-prime-clr-mild: hsl(148, 57%, 90%);
-// $light-border-color: hsl(148, 57%, 30%);
+// $light-prime-clr-mild: hsl(148, 57%, 90%);
+$light-prime-clr-mild: lighten($light-prime-clr, 50);
 $light-bg: hsl(0, 0%, 100%);
-$light-bg-sub: hsl(0, 0%, 90%);
+$light-bg-sub: darken($light-bg, 10);
 $light-fc: hsl(0, 0%, 10%);
-$light-fc-sub: hsl(0, 0%, 20%);
+$light-fc-sub: lighten($light-fc, 10);
 
-$dark-prime-clr: hsl(161, 53%, 58%);
-$dark-prime-clr-mild: hsl(161, 53%, 20%);
-// $dark-border-color: hsl(161, 53%, 80%);
+// $dark-prime-clr: hsl(161, 53%, 58%);
+$dark-prime-clr: lighten($light-prime-clr, 30);
+// $dark-prime-clr-mild: hsl(161, 53%, 20%);
+$dark-prime-clr-mild: darken($light-prime-clr, 20);
 $dark-bg: hsl(0, 0%, 7%);
-$dark-bg-sub: hsl(0, 0%, 30%);
+$dark-bg-sub: lighten($dark-bg, 23);
 $dark-fc: hsl(0, 0%, 95%);
-$dark-fc-sub: hsl(0, 0%, 80%);
-
+$dark-fc-sub: darken($dark-fc, 15);

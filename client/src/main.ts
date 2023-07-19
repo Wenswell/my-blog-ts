@@ -9,7 +9,4 @@ console.log(import.meta.env)
 console.log(import.meta.env.__APP_ENV__)
 import { createPinia } from 'pinia'
 
-const app = createApp(App)
-app.use(createPinia())
-
-app.use(router).mount('#app')
+createApp(App).use(createPinia()).use(router).mount('#app')

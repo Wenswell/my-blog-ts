@@ -58,14 +58,30 @@ export const constantRoutes = [
     ],
   },
 
-  // { path: '/about', name: 'About', component: () => import('@/views/about/index.vue') },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/dash/login.vue'),
+  },
 
   {
-    path: '/:pathMatch(.*)*',
+    path: '/dash',
+    name: 'Dashbord',
+    component: () => import('@/views/dash/index.vue'),
+  },
+
+  // { path: '/about', name: 'About', component: () => import('@/views/about/index.vue') },
+
+  // {
+  //   path: '/:pathMatch(.*)*',
+  //   name: 'NotFound',
+  //   component: () => import('@/views/test/index.vue'),
+  // },
+
+  {
+    path: '/test',
     name: 'NotFound',
     component: () => import('@/views/test/index.vue'),
   },
-
-  // { path: '/test', name: 'NotFound', component: () => import('@/views/test/index.vue'), },
-  // { path: '/:pathMatch(.*)*', redirect: '/test' },
+  { path: '/:pathMatch(.*)*', redirect: '/test' },
 ]

@@ -9,12 +9,14 @@
     "preview": "vite preview",
     "lint": "eslint src",
     "fix": "eslint src --fix",
+    "lint-and-fix": "pnpm run fix && pnpm run format",
     "format": "prettier --write \"./**/*.{html,vue,ts,js,json,md}\"",
     "lint:eslint": "eslint src/**/*.{ts,vue} --cache --fix",
     "lint:style": "stylelint src/**/*.{css,scss,vue} --cache --fix",
     "preinstall": "node ./scripts/preinstall.js"
   },
   "dependencies": {
+    "@vueuse/core": "^10.2.1",
     "axios": "^1.4.0",
     "normalize.css": "^8.0.1",
     "pinia": "^2.1.4",

@@ -45,7 +45,7 @@ const navList = [
   { link: '/categories', label: '分类' },
   { link: '/tags', label: '标签' },
   { link: '/about', label: '关于' },
-  { link: '/admin', label: '后台' },
+  { link: '/login', label: '后台' },
 ]
 </script>
 
@@ -119,7 +119,7 @@ input:focus-visible {
     &::after,
     &::before,
     & span {
-      @include prime_shadow_white_border;
+      @include prime_shadow_white_border_clr;
     }
   }
 }
@@ -129,7 +129,7 @@ input:checked:focus-visible {
     &::before,
     & span,
     &::after {
-      @include white_shadow_prime_border;
+      @include pwhite_shadow_prime_border_clr;
     }
   }
 }
@@ -224,7 +224,7 @@ input:checked:focus-visible {
   padding-block: $gap-s;
   box-shadow: 0px 1px 2px 0px hsla(0, 0%, 50%, 0.2);
   // margin-top: $hbg-margin;
-  @include white_bg_black_txt;
+  @include white_bg_unset_txt;
 
   .logo {
     font-size: $fz-l;
@@ -261,7 +261,7 @@ input:checked:focus-visible {
     grid-template-columns: minmax($gap-xl, 5vw) 2fr auto minmax($gap-xl, 5vw);
     align-items: center;
     box-shadow: 0px 1px 2px 0px hsla(0, 0%, 50%, 0.2);
-    @include white_bg_black_txt;
+    @include white_bg_unset_txt;
 
     .topbar {
       grid-column-start: 2;
@@ -275,7 +275,7 @@ input:checked:focus-visible {
     }
 
     .sidebar {
-      @include white_bg_black_txt;
+      @include white_bg_unset_txt;
 
       ul {
         display: flex;
@@ -291,7 +291,7 @@ input:checked:focus-visible {
         // transition: background 200ms;
         z-index: 2;
         padding: $gap;
-        @include white_bg_black_txt;
+        @include white_bg_unset_txt;
 
         &:focus-visible {
           @include white_bg_prime_txt;

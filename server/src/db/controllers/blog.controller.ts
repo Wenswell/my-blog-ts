@@ -3,13 +3,13 @@
 // user.controller.ts 
 import { createBlog, findBlogById } from '../models/blog.model';
 
-export const createNewBlog = async (req, res) => {
+export const createNewBlog = asyncHandler(async (req, res) => {
   const blog = req.body;
   await createBlog(blog);
   //...
 }
 
-export const getBlog = async (req, res) => {
+export const getBlog = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const blog = await findBlogById(id);
   //... 

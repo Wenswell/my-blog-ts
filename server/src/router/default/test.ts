@@ -1,28 +1,21 @@
-import { Router } from 'express';
+import { Router } from 'express'
 
+const router = Router()
 
-export function testRoutes() {
+router.get('/', (req, res) => {
+  res.send('test')
+})
 
-  const router = Router();
+router.post('/', (req, res) => {
+  res.send('Method POST test successful!')
+})
 
-  router.get('/', (req, res) => {
+router.put('/', (req, res) => {
+  res.send('Method PUT test successful!')
+})
 
+router.delete('/', (req, res) => {
+  res.send('Method DELETE test successful!')
+})
 
-    res.send('test');
-  });
-
-  router.post('/', (req, res) => {
-    res.send('Method POST test successful!');
-  });
-
-  router.put('/', (req, res) => {
-    res.send('Method PUT test successful!');
-  });
-
-  router.delete('/', (req, res) => {
-    res.send('Method DELETE test successful!');
-  });
-
-  return router;
-
-}
+export default router

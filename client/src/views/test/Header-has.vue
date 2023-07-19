@@ -81,14 +81,14 @@ $ani-time: 200ms;
   &:has(input:focus-visible)::after,
   &:has(input:focus-visible)::before,
   & input:focus-visible {
-    @include prime_shadow_white_border;
+    @include prime_shadow_white_border_clr;
   }
 
   &:has(input:checked) {
     &:has(input:focus-visible)::after,
     &:has(input:focus-visible)::before,
     & input:focus-visible {
-      @include white_shadow_prime_border;
+      @include pwhite_shadow_prime_border_clr;
     }
 
     &::before,
@@ -235,7 +235,7 @@ $ani-time: 200ms;
     }
 
     .sidebar ul {
-      @include white_bg_black_txt;
+      @include white_bg_unset_txt;
     }
 
     .sidebar a {
@@ -244,7 +244,7 @@ $ani-time: 200ms;
       transition: all 200ms;
       z-index: 2;
       padding: 1rem;
-      @include white_bg_black_txt;
+      @include white_bg_unset_txt;
 
       &:focus-visible {
         // @include black_border;

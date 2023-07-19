@@ -13,7 +13,7 @@ h3 {
 }
 
 a {
-  @include white_bg_black_txt;
+  @include unset_bg_unset_txt;
   text-decoration: none;
 }
 
@@ -25,6 +25,7 @@ a._under {
   background-position: right bottom;
   background-size: 0 $gap-s;
 }
+
 .dark a._under {
   background-image: linear-gradient(0deg, rgba($dark-prime-clr, 0.75), rgba($dark-prime-clr, 0.75));
 }
@@ -32,4 +33,16 @@ a._under {
 a._under:where(:hover, :focus-visible) {
   background-size: 100% $gap-s;
   background-position-x: left;
+}
+
+button {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+  }
 }

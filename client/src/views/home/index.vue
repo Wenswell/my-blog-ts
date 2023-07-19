@@ -54,10 +54,12 @@
   <footer>
     <p>powered by myself</p>
   </footer>
+  <ModeToggleButton />
 </template>
 
 <script setup lang="ts">
 import Header from '@/components/Header.vue'
+import ModeToggleButton from '@/components/ModeToggleButton.vue'
 </script>
 
 <style lang="scss" scoped>
