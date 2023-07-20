@@ -24,10 +24,11 @@ export const constantRoutes = [
 
   {
     path: '/tags',
+    redirect: '/tags/AWS',
     component: () => import('@/views/index.vue'),
     children: [
       {
-        path: '',
+        path: ':tagName',
         name: 'TagList',
         component: () => import('@/views/tags/index.vue'),
       },
@@ -36,10 +37,11 @@ export const constantRoutes = [
 
   {
     path: '/categories',
+    redirect: '/categories/无',
     component: () => import('@/views/index.vue'),
     children: [
       {
-        path: '',
+        path: ':categoryName',
         name: 'CategoryList',
         component: () => import('@/views/categories/index.vue'),
       },

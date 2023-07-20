@@ -1,17 +1,18 @@
 import { failure } from '@/utils/error'
 import { genCategoryId } from '@/utils/genid'
 import { Schema, model, Document, ObjectId, Types } from 'mongoose'
-import { Blog } from './BLOG.model'
+import { AnBlog, Blog } from './BLOG.model'
 
 export interface Category extends Document {
   id: string
   categoryName: string
-  blogs: Blog[] // 添加虚拟属性类型
+  blogs: AnBlog[] // 添加虚拟属性类型
   count: number
   createAt: Date
   blogList: Types.ObjectId[]
   updateBlogsCategory: (name: string) => Promise<void>
   deleteBlogsCategory: () => Promise<void>
+  getBlogsInCateg: () => Promise<object>
 }
 
 const categorySchema = new Schema({
@@ -47,6 +48,18 @@ categorySchema.methods.updateBlogsCategory = async function (
     blog.categoryName = newName
     await blog.save()
   }
+}
+
+categorySchema.methods.getBlogsInCateg = async function (this: Category) {
+  // 根据blogList查询Blog
+  const blogs = await Blog.find(
+    {
+      _id: { $in: this.blogList },
+    },
+    { _id: 0, __v: 0, content: 0 },
+  )
+
+  return blogs
 }
 
 categorySchema.methods.deleteBlogsCategory = async function (this: Category) {
@@ -90,6 +103,26 @@ const addCateg = (newName: string) => {
 
 const getAllCateg = async () => {
   return Category.find({}, { _id: 0, id: 1, categoryName: 1, count: 1 })
+}
+
+const getBlogsByCategName = async (categoryName: string) => {
+  const categ = await Category.findOne({ categoryName })
+  // const categ = await Category.findOne({ id })
+  if (!categ) failure.cantFindByNmae({ type: 'category', name: categoryName })
+
+  // const updatedCateg = await Category.findOneAndUpdate(
+  //   { id },
+  //   { categoryName: newName },
+  //   { new: true },
+  // )
+
+  // if (!updatedCateg) throw 'findOneAndUpdate failed'
+
+  // await updatedCateg.updateBlogsCategory(newName)
+
+  const asdfasddgass = await (categ as Category).getBlogsInCateg()
+  console.log('asdfasddgass', asdfasddgass)
+  return asdfasddgass
 }
 
 const updateCategById = async ({
@@ -157,4 +190,5 @@ export const DBcateg = {
   getAllCateg,
   updateCategById,
   deleteCategById,
+  getBlogsByCategName,
 }

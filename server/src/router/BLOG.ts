@@ -48,6 +48,15 @@ interface UpdateBlog {
 
 const router = Router()
 
+// 缓存容量上限
+const MAX_CACHE_SIZE = 100
+
+// 查询结果缓存
+const cacheMap = new Map<string, object>()
+
+// 缓存key集合,用于记录缓存访问顺序
+const cacheKeySet = new Set()
+
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -86,10 +95,52 @@ router.get(
     }
     console.log('find', find)
 
-    const { blogs, totalCount, totalPages } = await DBblog.getBlogs(find)
-    console.log('totalCount', totalCount)
+    interface ResultType {
+      blogs: []
+      totalCount: number
+      totalPages: number
+    }
+
+    let reresult: ResultType = {
+      blogs: [],
+      totalCount: 0,
+      totalPages: 0,
+    }
+
+    // 生成缓存key
+    const cacheKey = `${keyword}-${page}`
+    // const cacheKey = `${keyword}`
+
+    // 查找缓存
+    console.log('cacheMap', cacheMap.keys())
+    if (cacheMap.has(cacheKey)) {
+      // 命中缓存,把key移到set头部
+      cacheKeySet.delete(cacheKey)
+      cacheKeySet.add(cacheKey)
+      const cacheResult = cacheMap.get(cacheKey) as ResultType
+      reresult = cacheResult
+    } else {
+      // 未命中,查询数据库
+      const result = await DBblog.getBlogs(find)
+
+      reresult = result as ResultType
+
+      // 添加新的缓存
+      cacheMap.set(cacheKey, result)
+      cacheKeySet.add(cacheKey)
+    }
+
+    // 如果缓存满了,移除最近最少使用的
+    if (cacheKeySet.size > MAX_CACHE_SIZE) {
+      const oldestKey = cacheKeySet.keys().next().value as string
+      cacheMap.delete(oldestKey)
+      cacheKeySet.delete(oldestKey)
+    }
+
+    const { blogs, totalCount, totalPages } = reresult
 
     await send.isSuccess(res, {
+      currentPage: page,
       totalCount,
       totalPages,
       blogs,

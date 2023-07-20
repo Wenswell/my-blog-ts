@@ -7,15 +7,22 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: constantRoutes,
   //滚动行为
-  scrollBehavior() {
-    return {
-      left: 0,
-      top: 0,
-    }
-  },
+  // scrollBehavior() {
+  //   return {
+  //     left: 0,
+  //     top: 0,
+  //   }
+  // },
 })
-router.beforeEach((_to, _from, next) => {
+router.beforeEach((to, from, next) => {
+  console.log('to', to)
+  console.log('from', from)
   window.history.scrollRestoration = 'auto'
+
+  if (to.name !== from.name) {
+    // 设置滚动条在顶部
+    window.scrollTo(0, 0)
+  }
   next()
 })
 export default router

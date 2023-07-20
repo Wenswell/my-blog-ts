@@ -30,6 +30,18 @@
   }
 }
 
+@mixin unset_bg_grey_txt() {
+  background-color: unset;
+  // background-color: unset;
+  // color: $light-fc;
+  color: $light-fc-sub;
+  .dark & {
+    // background-color: $dark-bg;
+    background-color: unset;
+    // color: $dark-fc;
+    color: $dark-fc-sub;
+  }
+}
 @mixin white_bg_unset_txt() {
   background-color: $light-bg;
   // background-color: unset;
@@ -43,6 +55,19 @@
   }
 }
 
+@mixin white_black_bg_unset_txt() {
+  background-color: $light-bg;
+  // background-color: unset;
+  // color: $light-fc;
+  color: unset;
+  .dark & {
+    background-color: $dark-bg;
+    // background-color: unset;
+    // color: $dark-fc;
+    color: unset;
+  }
+}
+
 @mixin white_bg_prime_txt() {
   background-color: $light-bg;
   // background-color: unset;
@@ -51,6 +76,13 @@
     background-color: $dark-bg;
     // background-color: unset;
     color: $dark-prime-clr;
+  }
+}
+
+@mixin unset_bg_white_txt() {
+  color: $light-bg;
+  .dark & {
+    color: $dark-bg;
   }
 }
 
@@ -79,10 +111,21 @@
   }
 }
 
-@mixin __reverse_mild_txt() {
-  color: $dark-prime-clr-mild;
+@mixin foucs_mild_txt() {
+  &:where(:hover, :focus-visible) {
+    color: $dark-prime-clr-mild;
+    .dark & {
+      color: $light-prime-clr-mild;
+    }
+  }
+}
+
+@mixin red_mild_clr_border_clr() {
+  color: lighten(red, 30);
+  border-color: lighten(red, 10);
   .dark & {
-    color: $light-prime-clr-mild;
+    color: darken(red, 30);
+    border-color: darken(red, 10);
   }
 }
 
@@ -128,4 +171,39 @@
 @mixin thin_border_noclr($border-width: 1px, $border-radius: 2px) {
   border: $border-width solid;
   border-radius: $border-radius;
+}
+
+@mixin input_label_effect($outline-offset: $gap-px) {
+  position: relative;
+  display: flex;
+
+  &_label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    transform: translate($gap-s, 0);
+    transform-origin: $gap-s 0;
+    transition: transform 120ms ease-in;
+    font-weight: bold;
+    line-height: 1;
+    padding-inline: $gap-px;
+    @include white_bg_prime_txt;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  &_field {
+    flex: 1;
+    display: block;
+    line-height: $fz;
+    outline-offset: $outline-offset;
+
+    &:focus,
+    &:not(:placeholder-shown) {
+      & + span {
+        transform: translate($gap-s, -67%) scale(0.8);
+      }
+    }
+  }
 }

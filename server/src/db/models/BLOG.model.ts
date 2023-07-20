@@ -5,7 +5,7 @@ import { updateCategByCategName } from './CATEGORY.model'
 import { failure } from '@/utils/error'
 
 // 1. 定义接口
-export interface Blog extends Document {
+export interface AnBlog extends Document {
   id: string
   title: string
   description: string
@@ -31,7 +31,7 @@ const blogSchema = new Schema({
 })
 
 // 3. 生成模型
-export const Blog = model<Blog>('Blog', blogSchema)
+export const Blog = model<AnBlog>('Blog', blogSchema)
 
 // 4. 封装CRUD操作
 
@@ -39,7 +39,7 @@ export const Blog = model<Blog>('Blog', blogSchema)
 type BlogSortFields = 'title' | 'postAt' | 'editAt'
 
 interface GetBlogsOptions {
-  query?: FilterQuery<Blog> // 查询条件
+  query?: FilterQuery<AnBlog> // 查询条件
   keyword?: string // 搜索关键词
   page?: number
   limit?: number
@@ -55,7 +55,7 @@ const getBlogs = async ({
   limit = 10,
 }: GetBlogsOptions) => {
   // 构建查询条件
-  let findQuery: FilterQuery<Blog> = {}
+  let findQuery: FilterQuery<AnBlog> = {}
   if (keyword) {
     findQuery = {
       $or: [
@@ -127,7 +127,7 @@ const updateBlogById = async ({
   update,
 }: {
   id: string
-  update: Partial<Blog>
+  update: Partial<AnBlog>
 }) => {
   // 1. 查找原博客
   const blog = await Blog.findOne({ id })

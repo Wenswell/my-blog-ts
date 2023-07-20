@@ -89,10 +89,11 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-$btn-width: 2.25em;
-$btn-height: 1.25em;
+$btn-width: 1.5rem;
+$btn-height: 1rem;
 
 button.change-mode {
+  padding-block: 0;
   zoom: 1.25;
   width: $btn-width;
   height: $btn-height;
@@ -107,14 +108,14 @@ button.change-mode {
   background-color: hsl(0, 0%, 95%);
 
   &:active > svg {
-    left: 0.15 * $btn-height;
+    left: 0.15 * $btn-width;
     filter: blur(0.05em);
     transition: left 300ms;
   }
 
   & > svg {
     position: absolute;
-    left: 0.05 * $btn-height;
+    left: 0.05 * $btn-width;
     background-color: white;
     border-radius: 50%;
     transition:
@@ -134,7 +135,8 @@ button.change-mode {
       opacity: 0;
       z-index: -1;
       fill: white;
-      width: 0.8 * $btn-height;
+      width: 0.7 * $btn-height;
+      padding: 0.1 * $btn-height;
     }
   }
 
@@ -142,11 +144,11 @@ button.change-mode {
     background-color: hsl(0, 0%, 20%);
 
     &:active > svg {
-      left: 0.75 * $btn-height;
+      left: 0.85 * $btn-width;
     }
 
     & > svg {
-      left: 0.85 * $btn-height;
+      left: 1 * $btn-width;
       background-color: black;
 
       &.mode-sun {
@@ -157,6 +159,26 @@ button.change-mode {
       &.mode-moon {
         opacity: 1;
         z-index: 1;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 45rem) {
+  $btn-width: 2.15rem;
+  $btn-height: 1rem;
+
+  button.change-mode {
+    width: $btn-width;
+    height: $btn-height;
+
+    &[aria-checked='true'] {
+      &:active > svg {
+        left: 0.5 * $btn-width;
+      }
+
+      & > svg {
+        left: 0.6 * $btn-width;
       }
     }
   }

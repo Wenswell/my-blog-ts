@@ -1,12 +1,12 @@
 import { failure } from '@/utils/error'
 import { genTagId } from '@/utils/genid'
 import { Schema, model, Document, ObjectId, Types } from 'mongoose'
-import { Blog } from './BLOG.model'
+import { AnBlog, Blog } from './BLOG.model'
 
 export interface Tag extends Document {
   id: string
   tagName: string
-  blogs: Blog[] // 添加虚拟属性类型
+  blogs: AnBlog[] // 添加虚拟属性类型
   count: number
   createAt: Date
   blogList: Types.ObjectId[]
@@ -72,7 +72,11 @@ const Tag = model<Tag>('tag', tagSchema)
 
 const getBlogsByTagName = async (tagName: string) => {
   const tag = await Tag.findOne({ tagName }).populate('blogs')
-  if (!tag) throw 'findOne failed'
+  console.log('tag', tag)
+  if (!tag) {
+    failure.cantFindByNmae({ type: 'tag', name: tagName })
+    return
+  }
   return tag.blogs
 }
 

@@ -3,12 +3,12 @@
   <ModeToggleButton />
 
   <p>currentRouteName: {{ currentRouteName }}</p>
-  <PostCard v-for="post in postList" :key="post.id" :post="post" />
+  <APostCard v-for="post in postList" :key="post.id" :post="post" />
 </template>
 
 <script setup lang="ts">
 import ModeToggleButton from '@/components/ModeToggleButton.vue'
-import PostCard from '@/components/PostCard.vue'
+import APostCard from '@/components/APostCard.vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 

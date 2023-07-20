@@ -1,7 +1,7 @@
 import request from '@/utils/require'
 import { AxiosPromise } from 'axios'
 
-interface BlogPrew {
+export interface IBlogPrew {
   id: string
   title: string
   description: string
@@ -12,17 +12,29 @@ interface BlogPrew {
   descImg: string
 }
 
-interface BlogSearchResult extends AxiosPromise<any> {
+export interface ICategItem {
+  id: string
+  categoryName: string
+  count: number
+}
+
+export interface ITagItem {
+  id: string
+  tagName: string
+  count: number
+}
+
+interface IBlogSearchResult extends AxiosPromise<any> {
   success: boolean
   message: string
   data: {
     totalCount: number
     totalPages: number
-    blogs: BlogPrew[]
+    blogs: IBlogPrew[]
   }
 }
 
-interface BlogSearchParams {
+interface ISearchBlogParams {
   keyword?: string
   categoryName?: string
   tagNameList?: string[]
@@ -30,10 +42,42 @@ interface BlogSearchParams {
   pageSize?: number
 }
 
-export default async function searchBlogs(
-  obj: BlogSearchParams,
-): Promise<BlogSearchResult> {
+interface IGetBlogByCategNameParams {
+  categoryName?: string
+  page?: number
+  pageSize?: number
+}
+
+interface IGetBlogByTagNameParams {
+  tagName?: string
+  page?: number
+  pageSize?: number
+}
+
+export async function searchBlogs(
+  obj: ISearchBlogParams,
+): Promise<IBlogSearchResult> {
   return await request('/blog', 'get', obj)
+}
+
+export async function getCateg(): Promise<IBlogSearchResult> {
+  return await request('/categ', 'get')
+}
+
+export async function getTag(): Promise<IBlogSearchResult> {
+  return await request('/tag', 'get')
+}
+
+export async function getBlogByCategName(
+  obj: IGetBlogByCategNameParams,
+): Promise<IBlogSearchResult> {
+  return await request('/categ/blogs', 'get', obj)
+}
+
+export async function getBlogByTagName(
+  obj: IGetBlogByTagNameParams,
+): Promise<IBlogSearchResult> {
+  return await request('/tag/blogs', 'get', obj)
 }
 
 // export default function blogSearch({
@@ -42,7 +86,7 @@ export default async function searchBlogs(
 //   tagNameList,
 //   page,
 //   pageSize,
-// }: BlogSearchParams): Promise<BlogSearchResult> {
+// }: ISearchBlogParams): Promise<IBlogSearchResult> {
 //   return request('/blog', 'get', {
 //     keyword,
 //     categoryName,

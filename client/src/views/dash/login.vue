@@ -37,7 +37,7 @@
       </label>
 
       <button
-        class="submit"
+        class="submit effect"
         :class="{ invalid: accountError || passwordError }"
         :aria-disabled="accountError || passwordError"
       >
@@ -92,7 +92,7 @@ const onSubmit = () => {
 form {
   max-width: 30rem;
   margin: auto;
-  margin-top: max(5vh, 5vw);
+  margin-block: max(5vh, 5vw);
 }
 
 fieldset {
@@ -113,34 +113,9 @@ fieldset {
 }
 
 .input {
-  position: relative;
-  display: flex;
-
-  &_label {
-    position: absolute;
-    left: 0;
-    top: 0;
-    white-space: nowrap;
-    transform: translate($gap-s, 0);
-    transform-origin: $gap-s 0;
-    transition: transform 120ms ease-in;
-    font-weight: bold;
-    line-height: 1;
-    padding-inline: $gap-px;
-    @include white_bg_prime_txt;
-    user-select: none;
-    -webkit-user-select: none;
-  }
+  @include input_label_effect;
 
   &_field {
-    flex: 1;
-    display: block;
-    padding: $gap-s;
-    line-height: $fz;
-    outline-offset: $gap-xs;
-    @include thin_border_noclr;
-    @include white_bg_unset_txt;
-
     &:not(:placeholder-shown):invalid {
       @include red_border_clr;
     }
@@ -148,34 +123,22 @@ fieldset {
     &:valid {
       @include prime_border_clr;
     }
-
-    &:focus,
-    &:not(:placeholder-shown) {
-      & + .input_label {
-        transform: translate($gap-s, -65%) scale(0.8);
-      }
-    }
   }
 }
 
 .submit {
   flex: 1;
-  padding: $gap-s;
   transform: translateY(0);
-  outline-offset: 2px;
-  @include thin_border_noclr;
-  @include white_bg_unset_txt;
-  transition: all 100ms;
 
-  &:where(:hover, :focus-visible) {
-    transform: translateY(-1px);
-    box-shadow: 0px 1px 3px 1px hsl(0, 0%, 50%);
-  }
+  // &:where(:hover, :focus-visible) {
+  //   transform: translateY(-1px);
+  //   box-shadow: 0px 1px 3px 1px hsl(0, 0%, 50%);
+  // }
 
-  &:active {
-    transform: scale(0.99) translateY(0);
-    box-shadow: 0px 0px 0px 0px hsl(0, 0%, 50%);
-  }
+  // &:active {
+  //   transform: scale(0.99) translateY(0);
+  //   box-shadow: 0px 0px 0px 0px hsl(0, 0%, 50%);
+  // }
 
   &.invalid {
     opacity: 0.5;

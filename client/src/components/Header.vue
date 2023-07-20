@@ -11,11 +11,17 @@
     <aside class="sidebar" id="sidebar">
       <nav>
         <ul role="menu">
-          <li role="none" v-for="item in navList" :key="item.link">
+          <li role="none" v-for="item in navList" :key="item.path">
             <router-link
-              :aria-current="currentRoutePath === item.link ? 'page' : false"
-              :class="{ active: currentRoutePath === item.link }"
-              :to="item.link"
+              :title="currentRoute === item.path ? '就在这里' : '点击前往'"
+              :aria-label="
+                currentRoute === item.path
+                  ? '当前页面：' + item.label
+                  : '点击前往页面：' + item.label
+              "
+              :aria-current="currentRoute === item.path ? 'page' : false"
+              :class="{ active: currentRoute === item.path }"
+              :to="item.path"
             >
               {{ item.label }}
             </router-link>
@@ -23,7 +29,7 @@
         </ul>
       </nav>
     </aside>
-    <label for="menu-toggle" class="secLabel"></label>
+    <label for="menu-toggle" class="sec-label"></label>
   </header>
 </template>
 
@@ -34,18 +40,15 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const currentRoutePath = computed(() => route.path)
-console.log('route', route)
-console.log('route', route)
-console.log('route', route)
+const currentRoute = computed(() => route.matched[0].path)
 
 const navList = [
-  { link: '/', label: '主页' },
-  { link: '/articles', label: '文章' },
-  { link: '/categories', label: '分类' },
-  { link: '/tags', label: '标签' },
-  { link: '/about', label: '关于' },
-  { link: '/login', label: '后台' },
+  { path: '/', label: '主页' },
+  { path: '/articles', label: '文章' },
+  { path: '/categories', label: '分类' },
+  { path: '/tags', label: '标签' },
+  { path: '/about', label: '关于' },
+  { path: '/login', label: '后台' },
 ]
 </script>
 
@@ -63,13 +66,15 @@ $ani-time: 200ms;
 header {
   // height: $gap-xl;
   height: calc($hbg-height + $gap + 2px);
-  overflow: hidden;
+  // overflow: hidden;
   position: sticky;
   top: 0;
   z-index: 10;
+  @include white_black_bg_unset_txt;
 }
 
 input {
+  opacity: 0;
   appearance: none;
   outline: none;
   pointer-events: none;
@@ -79,7 +84,7 @@ input {
     width: 0;
 
     & ~ .hamburger-menu {
-      & ~ .secLabel {
+      & ~ .sec-label {
         display: block;
         opacity: 0.15;
       }
@@ -164,7 +169,7 @@ input:checked:focus-visible {
   }
 }
 
-.secLabel {
+.sec-label {
   display: none;
   position: fixed;
   top: 0;
@@ -192,14 +197,7 @@ input:checked:focus-visible {
     padding-top: calc($hbg-height + $hbg-margin + $gap);
   }
 
-  ul {
-    margin: 0;
-    padding: 0;
-  }
-
   li {
-    list-style: none;
-    height: $gap;
     line-height: $gap;
     display: flex;
     padding: $gap-s;
@@ -208,6 +206,7 @@ input:checked:focus-visible {
   a {
     text-decoration: none;
     width: 100%;
+    line-height: $fz-xxl;
     text-align: left;
     @include prime_bg_white_txt;
   }
@@ -215,7 +214,7 @@ input:checked:focus-visible {
 
 .topbar {
   width: 100%;
-  height: $hbg-height;
+  height: 100%;
   position: absolute;
   display: grid;
   align-items: center;
@@ -242,8 +241,9 @@ input:checked:focus-visible {
 
 @media screen and (min-width: 45rem) {
   .hamburger-menu,
+  .sec-label,
   #menu-toggle {
-    display: none;
+    display: none !important;
   }
 
   .sidebar,
@@ -261,11 +261,11 @@ input:checked:focus-visible {
     grid-template-columns: minmax($gap-xl, 5vw) 2fr auto minmax($gap-xl, 5vw);
     align-items: center;
     box-shadow: 0px 1px 2px 0px hsla(0, 0%, 50%, 0.2);
-    @include white_bg_unset_txt;
 
     .topbar {
       grid-column-start: 2;
       display: flex;
+      align-items: center;
       justify-content: space-between;
 
       .logo {
@@ -274,23 +274,29 @@ input:checked:focus-visible {
       }
     }
 
+    nav {
+      display: block;
+      height: 100%;
+    }
+
     .sidebar {
+      height: $gap-xl;
       @include white_bg_unset_txt;
 
       ul {
         display: flex;
-      }
-
-      li {
-        margin-block: $gap;
+        height: 100%;
       }
 
       a {
+        width: auto;
+        display: inline-block;
         // border-inline: 2px solid transparent;
+        height: 100%;
+        line-height: 3rem;
         user-select: none;
-        // transition: background 200ms;
         z-index: 2;
-        padding: $gap;
+        padding-inline: $gap;
         @include white_bg_unset_txt;
 
         &:focus-visible {
