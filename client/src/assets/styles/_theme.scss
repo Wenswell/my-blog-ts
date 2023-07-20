@@ -1,0 +1,209 @@
+@import "./_variables.scss";
+
+/*
+白底黑字  white_bg_unset_txt
+白底绿字  white_bg_prime_txt
+绿底白字  prime_bg_white_txt
+浅底绿字  mild_bg_prime_txt
+
+边框 
+
+按钮用 白底绿边框  prime_shadow_white_border_clr
+按钮用 绿底白边框  pwhite_shadow_prime_border_clr
+
+❌black_border
+❌prime_border
+❌prime_mild_border
+
+*/
+
+@mixin unset_bg_unset_txt() {
+  background-color: unset;
+  // background-color: unset;
+  // color: $light-fc;
+  color: unset;
+  .dark & {
+    // background-color: $dark-bg;
+    background-color: unset;
+    // color: $dark-fc;
+    color: unset;
+  }
+}
+
+@mixin unset_bg_grey_txt() {
+  background-color: unset;
+  // background-color: unset;
+  // color: $light-fc;
+  color: $light-fc-sub;
+  .dark & {
+    // background-color: $dark-bg;
+    background-color: unset;
+    // color: $dark-fc;
+    color: $dark-fc-sub;
+  }
+}
+@mixin white_bg_unset_txt() {
+  background-color: $light-bg;
+  // background-color: unset;
+  // color: $light-fc;
+  color: unset;
+  .dark & {
+    // background-color: $dark-bg;
+    background-color: unset;
+    // color: $dark-fc;
+    color: unset;
+  }
+}
+
+@mixin white_black_bg_unset_txt() {
+  background-color: $light-bg;
+  // background-color: unset;
+  // color: $light-fc;
+  color: unset;
+  .dark & {
+    background-color: $dark-bg;
+    // background-color: unset;
+    // color: $dark-fc;
+    color: unset;
+  }
+}
+
+@mixin white_bg_prime_txt() {
+  background-color: $light-bg;
+  // background-color: unset;
+  color: $light-prime-clr;
+  .dark & {
+    background-color: $dark-bg;
+    // background-color: unset;
+    color: $dark-prime-clr;
+  }
+}
+
+@mixin unset_bg_white_txt() {
+  color: $light-bg;
+  .dark & {
+    color: $dark-bg;
+  }
+}
+
+@mixin prime_bg_white_txt() {
+  background-color: $light-prime-clr;
+  color: $light-bg;
+  .dark & {
+    background-color: $dark-prime-clr;
+    color: $dark-bg;
+  }
+}
+
+@mixin mild_bg_prime_txt() {
+  background-color: $light-prime-clr-mild;
+  color: $light-prime-clr;
+  .dark & {
+    background-color: $dark-prime-clr-mild;
+    color: $dark-prime-clr;
+  }
+}
+
+@mixin prime_border_color() {
+  border-color: $light-prime-clr;
+  .dark & {
+    border-color: $dark-prime-clr;
+  }
+}
+
+@mixin foucs_mild_txt() {
+  &:where(:hover, :focus-visible) {
+    color: $dark-prime-clr-mild;
+    .dark & {
+      color: $light-prime-clr-mild;
+    }
+  }
+}
+
+@mixin red_mild_clr_border_clr() {
+  color: lighten(red, 30);
+  border-color: lighten(red, 10);
+  .dark & {
+    color: darken(red, 30);
+    border-color: darken(red, 10);
+  }
+}
+
+@mixin red_border_clr() {
+  border-color: darken(red, 10);
+  .dark & {
+    border-color: red;
+  }
+}
+
+@mixin white_border_clr() {
+  border-color: $light-bg;
+  .dark & {
+    border-color: $dark-bg;
+  }
+}
+
+@mixin prime_border_clr() {
+  border-color: $light-prime-clr;
+  .dark & {
+    border-color: $dark-prime-clr;
+  }
+}
+
+@mixin prime_shadow_white_border_clr() {
+  border-color: $light-bg;
+  box-shadow: 0 0 0 $gap-px $light-prime-clr;
+  .dark & {
+    border-color: $dark-bg;
+    box-shadow: 0 0 0 $gap-px $dark-prime-clr;
+  }
+}
+
+@mixin pwhite_shadow_prime_border_clr() {
+  border-color: $light-prime-clr;
+  box-shadow: 0 0 0 2px $light-bg;
+  .dark & {
+    border-color: $dark-prime-clr;
+    box-shadow: 0 0 0 2px $dark-bg;
+  }
+}
+
+@mixin thin_border_noclr($border-width: 1px, $border-radius: 2px) {
+  border: $border-width solid;
+  border-radius: $border-radius;
+}
+
+@mixin input_label_effect($outline-offset: $gap-px) {
+  position: relative;
+  display: flex;
+
+  &_label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    transform: translate($gap-s, 0);
+    transform-origin: $gap-s 0;
+    transition: transform 120ms ease-in;
+    font-weight: bold;
+    line-height: 1;
+    padding-inline: $gap-px;
+    @include white_bg_prime_txt;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  &_field {
+    flex: 1;
+    display: block;
+    line-height: $fz;
+    outline-offset: $outline-offset;
+
+    &:focus,
+    &:not(:placeholder-shown) {
+      & + span {
+        transform: translate($gap-s, -67%) scale(0.8);
+      }
+    }
+  }
+}

@@ -1,5 +1,34 @@
-# Vue 3 + TypeScript + Vite
+# Vite + Vue 3 + Express + TypeScript
 
+## server
+
+```bash
+# https://github.com/seanpmaxwell/express-generator-typescript/issues/17
+# https://stackoverflow.com/questions/54201658/
+# npm i -g node-gyp
+# npx express-generator-typescript --with-auth "server"
+# npm install -g express-generator-typescript
+# npx express-generator-typescript "server"
+
+cd server
+
+npm init -y
+echo > index.js
+npm i express
+npm i typescript
+Rename-Item -Path index.js -NewName index.ts
+Remove-Item .\node_modules\ -Recurse
+pnpm import
+pnpm install
+pnpm i @types/express @types/node
+npx tsc --init
+npx tsc
+node .\dist\index.js
+```
+
+
+
+## client
 ```bash
 # 使用pnpm管理包
 npm install -g pnpm

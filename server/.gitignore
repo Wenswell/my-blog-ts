@@ -1,0 +1,8 @@
+**/node_modules
+dist/
+**/**/*.log
+
+public/upload/temp
+public/upload/*.png
+public/upload/*.jpg
+public/upload/*.jpeg

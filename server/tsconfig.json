@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "strictNullChecks": true,
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"],
+      "@db/*": ["./db/*"],
+      "@router/*": ["./router/*"]
+    },
+    "outDir": "dist",
+    "sourceMap": true,
+    "noImplicitAny": true
+  },
+  "include": ["src/**/*"]
+}
