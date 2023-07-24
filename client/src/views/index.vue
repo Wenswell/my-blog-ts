@@ -1,8 +1,10 @@
 <template>
   <Header />
-  <main>
-    <router-view />
-  </main>
+  <router-view v-slot="{ Component }">
+    <transition name="route">
+      <component :is="Component" />
+    </transition>
+  </router-view>
   <footer>
     <p>powered by myself</p>
   </footer>
@@ -41,5 +43,23 @@ footer {
     display: flex;
     flex-direction: column;
   }
+}
+
+.route-enter-from {
+  opacity: 0;
+  filter: blur(10px);
+  // transform: translateY(60px);
+}
+.route-enter-active {
+  transition: all 250ms ease-out;
+}
+.route-leave-active {
+  transition: all 100ms ease-out;
+}
+
+.route-leave-to {
+  opacity: 0;
+  filter: blur(10px);
+  // transform: translateX(-100px);
 }
 </style>

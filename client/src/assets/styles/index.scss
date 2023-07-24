@@ -42,6 +42,7 @@ a._under:where(:hover, :focus-visible) {
 }
 
 button {
+  background-color: unset;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -104,3 +105,56 @@ button.effect {
     }
   }
 }
+
+._selector {
+  padding-bottom: $gap;
+  li {
+    opacity: 0.6;
+    border: 2px solid transparent;
+    @include mild_bg_prime_txt;
+
+    &:where(:hover, :focus-within) {
+      opacity: 1;
+
+      span {
+        opacity: 1;
+      }
+
+      button i {
+        transform: translateY(-1px);
+      }
+    }
+
+    &.active {
+      opacity: 1;
+      border-color: currentColor;
+
+      button i,
+      button:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  button {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: $gap-px;
+    width: 100%;
+    border-color: transparent;
+    background-color: inherit;
+
+    i {
+      transition: transform 100ms;
+    }
+  }
+
+  button:active {
+    i {
+      transform: translateY(0);
+    }
+  }
+}
+
+

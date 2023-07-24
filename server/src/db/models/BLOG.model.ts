@@ -47,7 +47,7 @@ interface GetBlogsOptions {
   order?: 1 | -1 // 排序顺序 1 升序 -1 降序
 }
 
-const getBlogs = async ({
+const findAll = async ({
   keyword,
   sort = 'editAt', // 默认排序字段
   order = -1, // 默认降序
@@ -82,12 +82,15 @@ const getBlogs = async ({
 }
 
 // 根据ID获取博客
-const getBlogById = async (id: string) => {
-  return Blog.findOne({ id })
+const findOneById = async (id: string) => {
+  const blog = await Blog.findOne({ id }, { _id: 0, __v: 0 })
+  if (!blog) failure.cantFindByField({ type: 'blog', id, field: 'id' })
+
+  return blog
 }
 
 // 新增博客
-const addBlog = async (params: {
+const addOne = async (params: {
   title: string
   description: string
   categoryName: string
@@ -122,7 +125,7 @@ const addBlog = async (params: {
 }
 
 // 更新博客
-const updateBlogById = async ({
+const updateOneById = async ({
   id,
   update,
 }: {
@@ -132,7 +135,7 @@ const updateBlogById = async ({
   // 1. 查找原博客
   const blog = await Blog.findOne({ id })
   if (!blog) {
-    failure.cantFindById({ type: 'blog', id })
+    failure.cantFindByField({ type: 'blog', id, field: 'id' })
     return
   }
 
@@ -161,11 +164,11 @@ const updateBlogById = async ({
 }
 
 // 删除博客
-const deleteBlogById = async (id: string) => {
+const deleteOneById = async (id: string) => {
   // const blog = await Blog.findOneAndDelete({ id });
   const blog = await Blog.findOne({ id })
   if (!blog) {
-    failure.cantFindById({ type: 'blog', id })
+    failure.cantFindByField({ type: 'blog', id, field: 'id' })
     return
   }
 
@@ -175,9 +178,9 @@ const deleteBlogById = async (id: string) => {
 }
 
 export const DBblog = {
-  getBlogs,
-  getBlogById,
-  addBlog,
-  updateBlogById,
-  deleteBlogById,
+  findAll,
+  findOneById,
+  addOne,
+  updateOneById,
+  deleteOneById,
 }

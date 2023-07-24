@@ -1,54 +1,53 @@
 <template>
-  <!-- <main> -->
+  <main>
+    <aside class="sidebar">
+      <div class="search-info">
+        {{ searchInfo }}
+      </div>
 
-  <aside class="sidebar">
-    <div class="search-info">
-      {{ searchInfo }}
+      <div class="search-box">
+        <label class="search">
+          <input
+            @keydown.enter="onSearch"
+            id="search"
+            class="search_field"
+            type="search"
+            placeholder=" "
+            v-model="keyword"
+          />
+          <span class="search_label">输入关键词</span>
+        </label>
+        <button
+          :disabled="loading"
+          :aria-disabled="loading"
+          class="search effect"
+          @click="onSearch"
+        >
+          搜索文章
+          <i
+            class="ri-loop-right-line loading-icon"
+            :class="{ loading: loading }"
+          ></i>
+        </button>
+      </div>
+
+      <Pagination
+        @handleClick="scrollToTarget"
+        to-path="/articles"
+        :total-page="totalPage"
+        :current-page="currentPage"
+      />
+    </aside>
+    <div
+      title="没有查询到任何文章！"
+      v-show="!loading && !blogs.length"
+      class="not-found"
+    >
+      <h2 class="text" data-text="Noresult...">Noresult...</h2>
     </div>
 
-    <div class="search-box">
-      <label class="search">
-        <input
-          @keydown.enter="onSearch"
-          id="search"
-          class="search_field"
-          type="search"
-          placeholder=" "
-          v-model="keyword"
-        />
-        <span class="search_label">输入关键词</span>
-      </label>
-      <button
-        :disabled="loading"
-        :aria-disabled="loading"
-        class="search effect"
-        @click="onSearch"
-      >
-        搜索文章
-        <i
-          class="ri-loop-right-line loading-icon"
-          :class="{ loading: loading }"
-        ></i>
-      </button>
-    </div>
-
-    <Pagination
-      to-path="/articles"
-      :total-page="totalPage"
-      :current-page="currentPage"
-    />
-  </aside>
-  <div
-    title="没有查询到任何文章！"
-    v-show="!loading && !blogs.length"
-    class="not-found"
-  >
-    <h2 class="text" data-text="Noresult...">Noresult...</h2>
-  </div>
-
-  <PostList :blogs="blogs" />
-
-  <!-- </main> -->
+    <PostList :blogs="blogs" />
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -74,6 +73,19 @@ let lastSearchTime = 0
 
 let timeout = 100
 
+const scrollToTarget = () => {
+  const target = document.querySelector('.search-info')
+  // const navHeight = document.querySelector('header')?.offsetHeight
+  // console.log('navHeight', navHeight)
+  // console.log('navHeight', navHeight)
+  // target.value?.scrollIntoView({ block: "start" })
+  target?.scrollIntoView({
+    block: 'start',
+    behavior: 'smooth',
+    inline: 'nearest',
+  } as any)
+}
+
 const searchInfo = computed(() => {
   const queryKeyword = route.query.keyword
     ? (route.query.keyword as string)
@@ -93,6 +105,7 @@ const searchInfo = computed(() => {
 })
 
 const onSearch = () => {
+  scrollToTarget()
   keyword.value
     ? router.push({ path: '/articles', query: { keyword: keyword.value } })
     : router.push({ path: '/articles' })

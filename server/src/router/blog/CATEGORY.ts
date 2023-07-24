@@ -1,24 +1,24 @@
-import { DBtag } from '@/db/models/TAG.model'
+import { DBcateg } from '@/db/models/CATEGORY.model'
 import { send } from '@/utils/sendRes'
 import { Router } from 'express'
 import Joi from 'joi'
 import asyncHandler from 'express-async-handler'
 
-const AddTagSchema = Joi.object({
-  tagName: Joi.string().required().min(2).max(30),
+const AddCategSchema = Joi.object({
+  categoryName: Joi.string().required().min(2).max(30),
 })
 const GetBlogSchema = Joi.object({
-  tagName: Joi.string().required().min(1).max(30),
+  categoryName: Joi.string().required().min(1).max(30),
   page: Joi.number().min(1),
 })
 
-const UpdateTagSchema = Joi.object({
-  id: Joi.string().required(),
-  tagName: Joi.string().required().min(2).max(30),
+const UpdateCategSchema = Joi.object({
+  id: Joi.string().length(7).required(),
+  categoryName: Joi.string().required().min(2).max(30),
 })
 
-const DeleteTagSchema = Joi.object({
-  id: Joi.string().required(),
+const DeleteCategSchema = Joi.object({
+  id: Joi.string().length(7).required(),
 })
 
 const router = Router()
@@ -26,7 +26,8 @@ const router = Router()
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const asdfasdfasg = await DBtag.getAllTag()
+    const asdfasdfasg = await DBcateg.findAll()
+
     await send.isSuccess(res, asdfasdfasg)
   }),
 )
@@ -52,11 +53,13 @@ router.get(
     }
 
     interface FindBlog {
-      tagName: string
+      categoryName: string
       page?: number
     }
 
-    const tagName = (verifiedResult.value as FindBlog).tagName
+    const categoryName = decodeURIComponent(
+      (verifiedResult.value as FindBlog).categoryName,
+    )
     const page = (verifiedResult.value as FindBlog)?.page || 1
 
     interface ResultType {
@@ -72,11 +75,9 @@ router.get(
     }
 
     // 生成缓存key
-    const cacheKey = `${tagName}`
+    const cacheKey = `${categoryName}`
     try {
       // 查找缓存
-      console.log('cacheMap', cacheMap)
-      console.log('cacheMap.has(cacheKey)', cacheMap.has(cacheKey))
       if (cacheMap.has(cacheKey)) {
         // 命中缓存,把key移到set头部
         cacheKeySet.delete(cacheKey)
@@ -85,9 +86,9 @@ router.get(
         reresult = cacheResult
       } else {
         // 未命中,查询数据库
-        const blogs = (await DBtag.getBlogsByTagName(tagName)) as []
+        const blogs = (await DBcateg.getBlogsByName(categoryName)) as []
 
-        // const result = await DBblog.getBlogs(find)
+        // const result = await DBblog.findAll(find)
         const totalCount = blogs.length
         const totalPages = Math.ceil(totalCount / limit)
 
@@ -118,7 +119,7 @@ router.get(
         blogs: currentBlogs,
       })
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),
@@ -127,21 +128,23 @@ router.get(
 router.post(
   '/add',
   asyncHandler(async (req, res) => {
-    const verifiedResult = AddTagSchema.validate(req.query)
+    const verifiedResult = AddCategSchema.validate(req.query)
     if (verifiedResult.error) {
       send.isError(res, verifiedResult.error.details[0].message)
 
       return
     }
 
-    const { tagName: addTagName } = verifiedResult.value as { tagName: string }
+    const { categoryName: addOneoryName } = verifiedResult.value as {
+      categoryName: string
+    }
     try {
-      const { id, tagName } = (await DBtag.addTag(addTagName)) as {
+      const { id, categoryName } = (await DBcateg.addOne(addOneoryName)) as {
         id: string
-        tagName: string
+        categoryName: string
       }
 
-      await send.isSuccess(res, { id, tagName })
+      await send.isSuccess(res, { id, categoryName })
     } catch (error) {
       send.isMongoError(res, error as object)
       return
@@ -152,26 +155,24 @@ router.post(
 router.put(
   '/update',
   asyncHandler(async (req, res) => {
-    const verifiedResult = UpdateTagSchema.validate(req.body)
+    const verifiedResult = UpdateCategSchema.validate(req.body)
     if (verifiedResult.error) {
       send.isError(res, verifiedResult.error.details[0].message)
 
       return
     }
 
-    const { id: updateTagId, tagName: updateTagName } =
-      verifiedResult.value as { id: string; tagName: string }
+    const { id: updateCategoryId, categoryName: updateCategoryName } =
+      verifiedResult.value as { id: string; categoryName: string }
     try {
-      const updateResult = await DBtag.updateTagById({
-        id: updateTagId,
-        newName: updateTagName,
+      const updateResult = await DBcateg.updateOneById({
+        id: updateCategoryId,
+        newName: updateCategoryName,
       })
-
-      if (!updateResult) throw 'updateTagById failed'
 
       await send.isSuccess(res, updateResult)
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),
@@ -180,23 +181,31 @@ router.put(
 router.delete(
   '/delete',
   asyncHandler(async (req, res) => {
-    const verifiedResult = DeleteTagSchema.validate(req.query)
+    const verifiedResult = DeleteCategSchema.validate(req.query)
     if (verifiedResult.error) {
       send.isError(res, verifiedResult.error.details[0].message)
 
       return
     }
 
-    const { id: deleteTagId } = verifiedResult.value as { id: string }
+    const { id: deleteCategId } = verifiedResult.value as { id: string }
     try {
-      const { id, tagName } = (await DBtag.deleteTagById(deleteTagId)) as {
+      // const huioadfgyihou = await DBcateg.deleteOneById(deleteCategId);
+
+      const { id, categoryName } = (await DBcateg.deleteOneById(
+        deleteCategId,
+      )) as {
         id: string
-        tagName: string
+        categoryName: string
       }
 
-      await send.isSuccess(res, { deletedId: id, deletedTagName: tagName })
+      // await send.isSuccess(res, { huioadfgyihou });
+      await send.isSuccess(res, {
+        deletedId: id,
+        deletedCategoryName: categoryName,
+      })
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),

@@ -17,8 +17,8 @@ export const getBlog = asyncHandler(async (req, res) => {
 import { 
   User,
   createUser,
-  findUserById,
-  findAllUsers,
+  findOneById,
+  findAll,
   updateUser,
   deleteUser,
 } from '@db/models/blog.model';
@@ -30,11 +30,11 @@ export const createNewUser = (user: User) => {
 
 // 查找用户
 export const getUserById = async (id: string) => {
-  return await findUserById(id);
+  return await findOneById(id);
 } 
 
 // 查找用户
-export const getAllUser = async () => {
-  return await findAllUsers();
+export const findAllUser = async () => {
+  return await findAll();
 } 
  */

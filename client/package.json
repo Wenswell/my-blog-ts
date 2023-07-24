@@ -20,6 +20,7 @@
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "initialize-css": "^1.4.0",
+    "md-editor-v3": "^4.2.2",
     "pinia": "^2.1.4",
     "remixicon": "^3.4.0",
     "vue": "^3.3.4",

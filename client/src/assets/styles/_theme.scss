@@ -150,6 +150,24 @@
   }
 }
 
+@mixin red_inset_shadow() {
+  box-shadow: 0px 0px 2px 1px darken(red, 10) inset,
+  0px 0px 1px 0px darken(red, 10);
+  .dark & {
+    box-shadow: 0px 0px 2px 1px red inset,
+    0px 0px 1px 0px red;
+  }
+}
+
+@mixin prime_inset_shadow() {
+  box-shadow: 0px 0px 2px 1px $light-prime-clr inset,
+  0px 0px 1px 0px $light-prime-clr ;
+  .dark & {
+    box-shadow: 0px 0px 2px 1px $dark-prime-clr inset,
+    0px 0px 1px 0px $dark-prime-clr ;
+  }
+}
+
 @mixin prime_shadow_white_border_clr() {
   border-color: $light-bg;
   box-shadow: 0 0 0 $gap-px $light-prime-clr;

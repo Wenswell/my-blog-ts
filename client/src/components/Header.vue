@@ -20,7 +20,6 @@
                   : '点击前往页面：' + item.label
               "
               :aria-current="currentRoute === item.path ? 'page' : false"
-              :class="{ active: currentRoute === item.path }"
               :to="item.path"
             >
               {{ item.label }}
@@ -308,7 +307,7 @@ input:checked:focus-visible {
           @include mild_bg_prime_txt;
         }
 
-        &.active {
+        &.router-link-active {
           cursor: default;
           @include prime_bg_white_txt;
         }

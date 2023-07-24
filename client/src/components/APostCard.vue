@@ -135,6 +135,9 @@ defineProps<{
   .tags a {
     @include foucs_mild_txt;
     margin-right: $gap-xs;
+    i {
+      margin-right: -5px;
+    }
   }
 }
 

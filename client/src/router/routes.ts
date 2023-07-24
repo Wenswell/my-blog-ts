@@ -1,8 +1,19 @@
 export const constantRoutes = [
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: () => import('@/views/home/index.vue'),
+  // },
   {
     path: '/',
-    name: 'Home',
-    component: () => import('@/views/home/index.vue'),
+    component: () => import('@/views/index.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: () => import('@/views/home/index.vue'),
+      },
+    ],
   },
 
   {

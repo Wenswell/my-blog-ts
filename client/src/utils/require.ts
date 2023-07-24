@@ -1,6 +1,6 @@
 // require.ts
 
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 
 const AxiosInstance = axios.create({
   baseURL: 'http://192.168.1.5:7333',
@@ -47,7 +47,7 @@ export default function request(
   url: string,
   method: 'get' | 'post' | 'put' | 'delete',
   submitData?: object,
-): Promise<AxiosResponse> {
+) {
   return AxiosInstance({
     method,
     url,

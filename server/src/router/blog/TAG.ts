@@ -1,24 +1,24 @@
-import { DBcateg } from '@/db/models/CATEGORY.model'
+import { DBtag } from '@/db/models/TAG.model'
 import { send } from '@/utils/sendRes'
 import { Router } from 'express'
 import Joi from 'joi'
 import asyncHandler from 'express-async-handler'
 
-const AddCategSchema = Joi.object({
-  categoryName: Joi.string().required().min(2).max(30),
+const AddTagSchema = Joi.object({
+  tagName: Joi.string().required().min(2).max(30),
 })
 const GetBlogSchema = Joi.object({
-  categoryName: Joi.string().required().min(1).max(30),
+  tagName: Joi.string().required().min(1).max(30),
   page: Joi.number().min(1),
 })
 
-const UpdateCategSchema = Joi.object({
-  id: Joi.string().required(),
-  categoryName: Joi.string().required().min(2).max(30),
+const UpdateTagSchema = Joi.object({
+  id: Joi.string().length(6).required(),
+  tagName: Joi.string().required().min(2).max(30),
 })
 
-const DeleteCategSchema = Joi.object({
-  id: Joi.string().required(),
+const DeleteTagSchema = Joi.object({
+  id: Joi.string().length(6).required(),
 })
 
 const router = Router()
@@ -26,8 +26,7 @@ const router = Router()
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const asdfasdfasg = await DBcateg.getAllCateg()
-
+    const asdfasdfasg = await DBtag.findAll()
     await send.isSuccess(res, asdfasdfasg)
   }),
 )
@@ -53,11 +52,13 @@ router.get(
     }
 
     interface FindBlog {
-      categoryName: string
+      tagName: string
       page?: number
     }
 
-    const categoryName = (verifiedResult.value as FindBlog).categoryName
+    const tagName = decodeURIComponent(
+      (verifiedResult.value as FindBlog).tagName,
+    )
     const page = (verifiedResult.value as FindBlog)?.page || 1
 
     interface ResultType {
@@ -73,9 +74,11 @@ router.get(
     }
 
     // 生成缓存key
-    const cacheKey = `${categoryName}`
+    const cacheKey = `${tagName}`
     try {
       // 查找缓存
+      console.log('cacheMap', cacheMap)
+      console.log('cacheMap.has(cacheKey)', cacheMap.has(cacheKey))
       if (cacheMap.has(cacheKey)) {
         // 命中缓存,把key移到set头部
         cacheKeySet.delete(cacheKey)
@@ -84,9 +87,9 @@ router.get(
         reresult = cacheResult
       } else {
         // 未命中,查询数据库
-        const blogs = (await DBcateg.getBlogsByCategName(categoryName)) as []
+        const blogs = (await DBtag.getBlogsByName(tagName)) as []
 
-        // const result = await DBblog.getBlogs(find)
+        // const result = await DBblog.findAll(find)
         const totalCount = blogs.length
         const totalPages = Math.ceil(totalCount / limit)
 
@@ -117,7 +120,7 @@ router.get(
         blogs: currentBlogs,
       })
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),
@@ -126,25 +129,21 @@ router.get(
 router.post(
   '/add',
   asyncHandler(async (req, res) => {
-    const verifiedResult = AddCategSchema.validate(req.query)
+    const verifiedResult = AddTagSchema.validate(req.query)
     if (verifiedResult.error) {
       send.isError(res, verifiedResult.error.details[0].message)
 
       return
     }
 
-    const { categoryName: addCategoryName } = verifiedResult.value as {
-      categoryName: string
-    }
+    const { tagName: addOneName } = verifiedResult.value as { tagName: string }
     try {
-      const { id, categoryName } = (await DBcateg.addCateg(
-        addCategoryName,
-      )) as {
+      const { id, tagName } = (await DBtag.addOne(addOneName)) as {
         id: string
-        categoryName: string
+        tagName: string
       }
 
-      await send.isSuccess(res, { id, categoryName })
+      await send.isSuccess(res, { id, tagName })
     } catch (error) {
       send.isMongoError(res, error as object)
       return
@@ -155,24 +154,26 @@ router.post(
 router.put(
   '/update',
   asyncHandler(async (req, res) => {
-    const verifiedResult = UpdateCategSchema.validate(req.body)
+    const verifiedResult = UpdateTagSchema.validate(req.body)
     if (verifiedResult.error) {
       send.isError(res, verifiedResult.error.details[0].message)
 
       return
     }
 
-    const { id: updateCategoryId, categoryName: updateCategoryName } =
-      verifiedResult.value as { id: string; categoryName: string }
+    const { id: updateTagId, tagName: updateTagName } =
+      verifiedResult.value as { id: string; tagName: string }
     try {
-      const updateResult = await DBcateg.updateCategById({
-        id: updateCategoryId,
-        newName: updateCategoryName,
+      const updateResult = await DBtag.updateOneById({
+        id: updateTagId,
+        newName: updateTagName,
       })
+
+      if (!updateResult) throw 'updateOneById failed'
 
       await send.isSuccess(res, updateResult)
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),
@@ -181,31 +182,23 @@ router.put(
 router.delete(
   '/delete',
   asyncHandler(async (req, res) => {
-    const verifiedResult = DeleteCategSchema.validate(req.query)
+    const verifiedResult = DeleteTagSchema.validate(req.query)
     if (verifiedResult.error) {
       send.isError(res, verifiedResult.error.details[0].message)
 
       return
     }
 
-    const { id: deleteCategId } = verifiedResult.value as { id: string }
+    const { id: deleteTagId } = verifiedResult.value as { id: string }
     try {
-      // const huioadfgyihou = await DBcateg.deleteCategById(deleteCategId);
-
-      const { id, categoryName } = (await DBcateg.deleteCategById(
-        deleteCategId,
-      )) as {
+      const { id, tagName } = (await DBtag.deleteTagById(deleteTagId)) as {
         id: string
-        categoryName: string
+        tagName: string
       }
 
-      // await send.isSuccess(res, { huioadfgyihou });
-      await send.isSuccess(res, {
-        deletedId: id,
-        deletedCategoryName: categoryName,
-      })
+      await send.isSuccess(res, { deletedId: id, deletedTagName: tagName })
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),

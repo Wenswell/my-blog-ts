@@ -45,7 +45,7 @@ router.post('/upload', (req, res) => {
     const ext = file.originalname.substring(lastDotIndex + 1)
 
     // 生成新文件名
-    const newFilename = Date.now().toString() + '.' + ext
+    const newFilename = new Date().toString() + '.' + ext
 
     // 移动并修改文件名
     fs.renameSync(

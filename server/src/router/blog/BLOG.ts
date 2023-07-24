@@ -5,7 +5,7 @@ import Joi from 'joi'
 import asyncHandler from 'express-async-handler'
 
 const AddBlogSchema = Joi.object({
-  title: Joi.string().required().max(30),
+  title: Joi.string().required().min(2).max(30),
   description: Joi.string().required().max(200),
   categoryName: Joi.string().min(2).max(30),
   tagNameList: Joi.array().items(Joi.string().min(2)),
@@ -14,8 +14,8 @@ const AddBlogSchema = Joi.object({
 })
 
 const UpdateBlogSchema = Joi.object({
-  id: Joi.string().required(),
-  title: Joi.string().max(30),
+  id: Joi.string().length(10).required(),
+  title: Joi.string().min(2).max(30),
   description: Joi.string().max(200),
   categoryName: Joi.string(),
   tagNameList: Joi.array().items(Joi.string()),
@@ -23,8 +23,8 @@ const UpdateBlogSchema = Joi.object({
   descImg: Joi.string(),
 })
 
-const deleteBlogSchema = Joi.object({
-  id: Joi.string().required(),
+const BlogIdSchema = Joi.object({
+  id: Joi.string().length(10).required(),
 })
 
 interface AddBlog {
@@ -121,7 +121,7 @@ router.get(
       reresult = cacheResult
     } else {
       // 未命中,查询数据库
-      const result = await DBblog.getBlogs(find)
+      const result = await DBblog.findAll(find)
 
       reresult = result as ResultType
 
@@ -148,6 +148,29 @@ router.get(
   }),
 )
 
+router.get(
+  '/detail',
+  asyncHandler(async (req, res) => {
+    const verifiedResult = BlogIdSchema.validate(req.query)
+    if (verifiedResult.error) {
+      send.isError(res, verifiedResult.error.details[0].message)
+
+      return
+    }
+
+    const id: string = (verifiedResult.value as { id: string }).id
+
+    try {
+      const rrres = (await DBblog.findOneById(id)) as object
+
+      await send.isSuccess(res, rrres)
+    } catch (error) {
+      send.isCustomError(res, error as object)
+      return
+    }
+  }),
+)
+
 router.post(
   '/add',
   asyncHandler(async (req, res) => {
@@ -161,9 +184,9 @@ router.post(
       return
     }
     try {
-      const { id } = (await DBblog.addBlog(
-        verifiedResult.value as AddBlog,
-      )) as { id: string }
+      const { id } = (await DBblog.addOne(verifiedResult.value as AddBlog)) as {
+        id: string
+      }
 
       await send.isSuccess(res, { id })
     } catch (error) {
@@ -187,7 +210,7 @@ router.put(
     const upppp = { id, update: { ...rest } }
     try {
       const { acknowledged, matchedCount, modifiedCount } =
-        (await DBblog.updateBlogById(upppp)) as {
+        (await DBblog.updateOneById(upppp)) as {
           acknowledged: boolean
           matchedCount: number
           modifiedCount: number
@@ -211,7 +234,7 @@ router.put(
 router.delete(
   '/delete',
   asyncHandler(async (req, res) => {
-    const verifiedResult = deleteBlogSchema.validate(req.query)
+    const verifiedResult = BlogIdSchema.validate(req.query)
     if (verifiedResult.error) {
       send.isError(res, verifiedResult.error.details[0].message)
 
@@ -221,7 +244,7 @@ router.delete(
     const id: string = (verifiedResult.value as { id: string }).id
 
     try {
-      const { acknowledged, deletedCount } = (await DBblog.deleteBlogById(
+      const { acknowledged, deletedCount } = (await DBblog.deleteOneById(
         id,
       )) as {
         acknowledged: boolean
@@ -232,7 +255,7 @@ router.delete(
         await send.isSuccess(res, { deletedId: id })
       }
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),

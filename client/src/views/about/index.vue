@@ -1,5 +1,7 @@
 <template>
-  <div>src\views\about\index.vue</div>
+  <main>
+    <div>src\views\about\index.vue</div>
+  </main>
 </template>
 
 <script setup lang="ts"></script>

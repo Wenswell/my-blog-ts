@@ -3,49 +3,47 @@
     <li
       class="arrow"
       v-show="showPag"
-      :title="
-        props.currentPage == 1
-          ? '已经到达第一页了'
-          : '前往第' + (props.currentPage - 1) + '页'
-      "
       :class="{ disable: props.currentPage == 1 }"
+      :aria-disabled="props.currentPage == 1"
     >
-      <button
-        :disabled="props.currentPage == 1"
-        :aria-disabled="props.currentPage == 1"
-        :aria-label="
-          props.currentPage == 1
-            ? '已经到达第一页了'
-            : '前往第' + (props.currentPage - 1) + '页'
-        "
-        @click="toPage(props.currentPage - 1)"
+      <router-link
+        v-if="props.currentPage !== 1"
+        :title="'前往第' + (props.currentPage - 1) + '页'"
+        :aria-label="'前往第' + (props.currentPage - 1) + '页'"
+        :to="{
+          path: route.path,
+          query: { ...$route.query, page: props.currentPage - 1 },
+        }"
       >
         <i class="ri-arrow-left-line"></i>
-      </button>
+      </router-link>
+
+      <a v-else title="已经到达第一页了" aria-label="已经到达第一页了">
+        <i class="ri-arrow-left-line"></i>
+      </a>
     </li>
 
     <li
       class="arrow"
       v-show="showPag"
-      :title="
-        props.currentPage == props.totalPage
-          ? '已经到达最后一页了'
-          : '前往第' + (props.currentPage + 1) + '页'
-      "
       :class="{ disable: props.currentPage == props.totalPage }"
+      :aria-disabled="props.currentPage == props.totalPage"
     >
-      <button
-        :disabled="props.currentPage == props.totalPage"
-        :aria-disabled="props.currentPage == props.totalPage"
-        :aria-label="
-          props.currentPage == props.totalPage
-            ? '已经到达最后一页了'
-            : '前往第' + (props.currentPage + 1) + '页'
-        "
-        @click="toPage(props.currentPage + 1)"
+      <router-link
+        v-if="props.currentPage !== props.totalPage"
+        :title="'前往第' + (props.currentPage + 1) + '页'"
+        :aria-label="'前往第' + (props.currentPage + 1) + '页'"
+        :to="{
+          path: route.path,
+          query: { ...$route.query, page: props.currentPage + 1 },
+        }"
       >
         <i class="ri-arrow-right-line"></i>
-      </button>
+      </router-link>
+
+      <a v-else title="已经到达最后一页了" aria-label="已经到达最后一页了">
+        <i class="ri-arrow-right-line"></i>
+      </a>
     </li>
 
     <li
@@ -55,31 +53,40 @@
       v-for="page in makePage"
       :key="page.i"
     >
-      <button
+      <router-link
         :aria-label="'前往第' + props.currentPage + '页'"
-        @click="toPage(page.i)"
+        :to="{ path: route.path, query: { ...$route.query, page: page.i } }"
       >
         {{ page.d }}
-      </button>
+      </router-link>
     </li>
 
-    <li class="traggle">
-      <button
-        :class="showPag ? 'close' : 'open'"
-        @click="showPag = !showPag"
-        :title="showPag ? '收起分页器' : '展开分页器'"
-        :aria-label="showPag ? '收起分页器' : '展开分页器'"
+    <li class="traggle" @click="showPag = !showPag">
+      <a
+        title="收起分页器"
+        aria-label="收起分页器"
         href="javascript:void(0);"
         class="close"
+        v-if="showPag"
       >
-        <i :class="showPag ? 'ri-close-circle-line' : 'ri-code-s-line'"></i>
-      </button>
+        <i class="ri-close-circle-line"></i>
+        <!-- <i class="ri-contract-left-right-line"></i> -->
+      </a>
+
+      <a
+        title="展开分页器"
+        aria-label="展开分页器"
+        href="javascript:void(0);"
+        class="open"
+        v-else
+      >
+        <i class="ri-code-s-line"></i>
+      </a>
     </li>
   </ul>
 </template>
 
 <script lang="ts" setup>
-import router from '@/router'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
@@ -96,20 +103,9 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  // handleClick: Function
 })
 
-const emits = defineEmits(['handleClick'])
-
 const showPag = ref(true)
-
-const toPage = (page: number) => {
-  emits('handleClick')
-  router.push({
-    path: route.path,
-    query: { ...route.query, page: page },
-  })
-}
 
 const makePage = computed(() => {
   if (props.totalPage < 2) return []
@@ -159,6 +155,8 @@ const makePage = computed(() => {
   const leftEllipsis = result.indexOf('...', 1)
   const rightEllipsis = result.indexOf('...', 3)
   for (let i = 0; i < result.length; i++) {
+    console.log('result[i]', result[i])
+    console.log('disp', disp)
     const count = (typeof result[i] === 'number' ? result[i] : 0) as number
     disp.push({
       d: count,
@@ -197,18 +195,17 @@ const makePage = computed(() => {
     width: $gap-l;
     height: $gap-l;
     border: 1px solid;
+    box-sizing: content-box;
 
     &:active {
       transform: translateY(1px);
     }
   }
 
-  button {
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    border-color: transparent;
-    background-color: inherit;
+  a {
+    display: block;
+    line-height: $gap-l;
+    text-align: center;
   }
 
   .active {
@@ -217,10 +214,6 @@ const makePage = computed(() => {
     }
 
     @include prime_bg_white_txt;
-
-    button {
-      background-color: inherit;
-    }
   }
 
   .arrow {

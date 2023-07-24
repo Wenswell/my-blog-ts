@@ -1,5 +1,5 @@
 import request from '@/utils/require'
-import { AxiosPromise } from 'axios'
+import { AxiosResponse } from 'axios'
 
 export interface IBlogPrew {
   id: string
@@ -10,6 +10,10 @@ export interface IBlogPrew {
   postAt: string
   editAt: string
   descImg: string
+}
+
+export interface IBlogDetail extends IBlogPrew {
+  content: string
 }
 
 export interface ICategItem {
@@ -24,13 +28,14 @@ export interface ITagItem {
   count: number
 }
 
-interface IBlogSearchResult extends AxiosPromise<any> {
+export interface NormalResult extends AxiosResponse {
   success: boolean
   message: string
   data: {
-    totalCount: number
-    totalPages: number
-    blogs: IBlogPrew[]
+    [x: string]: any
+    // totalCount: number
+    // totalPages: number
+    // blogs: IBlogPrew[]
   }
 }
 
@@ -54,39 +59,45 @@ interface IGetBlogByTagNameParams {
   pageSize?: number
 }
 
-export async function searchBlogs(
-  obj: ISearchBlogParams,
-): Promise<IBlogSearchResult> {
+interface IVerifyAndGetTokenParams {
+  account: string
+  password: string
+}
+
+export async function searchBlogs(obj: ISearchBlogParams) {
   return await request('/blog', 'get', obj)
 }
 
-export async function getCateg(): Promise<IBlogSearchResult> {
+export async function getCateg() {
   return await request('/categ', 'get')
 }
 
-export async function getTag(): Promise<IBlogSearchResult> {
+export async function getTag() {
   return await request('/tag', 'get')
 }
 
-export async function getBlogByCategName(
-  obj: IGetBlogByCategNameParams,
-): Promise<IBlogSearchResult> {
+export async function getBlogByCategName(obj: IGetBlogByCategNameParams) {
   return await request('/categ/blogs', 'get', obj)
 }
 
-export async function getBlogByTagName(
-  obj: IGetBlogByTagNameParams,
-): Promise<IBlogSearchResult> {
+export async function getBlogByTagName(obj: IGetBlogByTagNameParams) {
   return await request('/tag/blogs', 'get', obj)
 }
 
+export async function getDetailById(obj: { id: string }) {
+  return await request('/blog/detail', 'get', obj)
+}
+
+export async function verifyAndGetToken(obj: IVerifyAndGetTokenParams) {
+  return await request('/login', 'post', obj)
+}
 // export default function blogSearch({
 //   keyword,
 //   categoryName,
 //   tagNameList,
 //   page,
 //   pageSize,
-// }: ISearchBlogParams): Promise<IBlogSearchResult> {
+// }: ISearchBlogParams): Promise<NormalResponse> {
 //   return request('/blog', 'get', {
 //     keyword,
 //     categoryName,
