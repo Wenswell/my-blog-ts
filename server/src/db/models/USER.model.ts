@@ -6,7 +6,7 @@ import mongoose from 'mongoose'
 import * as bcrypt from 'bcrypt'
 
 // 1. 定义 User 接口
-export interface AnUser {
+export interface AnUser extends Document {
   id: string
   account: string
   // password: string
@@ -15,6 +15,7 @@ export interface AnUser {
   updatedAt: Date
   role: number
   loginHistory: Login[]
+  updateLoginHistory: () => Promise<void>
 }
 
 export interface UpdateAnUser {
@@ -44,13 +45,21 @@ const userSchema = new mongoose.Schema<AnUser>({
     },
   ],
 })
+userSchema.methods.updateLoginHistory = async function (this: AnUser) {
+  console.log('this', this)
 
-userSchema.methods.updateLoginHistory = function (this: AnUser) {
-  this.loginHistory.unshift({ time: new Date() })
+  const User = await UserModel.findOne({ id: this.id })
 
-  if (this.loginHistory.length > 10) {
-    this.loginHistory.pop()
+  if (User) {
+    User.loginHistory.unshift({ time: new Date() })
+
+    if (User.loginHistory.length > 10) {
+      User.loginHistory.pop()
+    }
+
+    await User.save()
   }
+  // await this.save();
 }
 
 // 3. 生成 User 模型
@@ -158,6 +167,8 @@ async function findAndVerifyPasswd(info: {
     failure.passowrdInvaild({ account })
     return
   }
+
+  await findUser.updateLoginHistory()
 
   return {
     id: findUser.id,

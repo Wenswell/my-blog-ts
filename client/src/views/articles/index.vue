@@ -5,7 +5,7 @@
         {{ searchInfo }}
       </div>
 
-      <div class="search-box">
+      <!-- <div class="search-box">
         <label class="search">
           <input
             @keydown.enter="onSearch"
@@ -29,7 +29,12 @@
             :class="{ loading: loading }"
           ></i>
         </button>
-      </div>
+      </div> -->
+      <SearchBox
+        v-model:keyword="keyword"
+        :loading="loading"
+        @on-search="onSearch"
+      />
 
       <Pagination
         @handleClick="scrollToTarget"
@@ -57,6 +62,7 @@ import { computed, ref, watchEffect } from 'vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import Pagination from '@/components/Pagination.vue'
+import SearchBox from '@/components/SearchBox.vue'
 const route = useRoute()
 
 let blogs = ref<IBlogPrew[]>([])
@@ -105,7 +111,6 @@ const searchInfo = computed(() => {
 })
 
 const onSearch = () => {
-  scrollToTarget()
   keyword.value
     ? router.push({ path: '/articles', query: { keyword: keyword.value } })
     : router.push({ path: '/articles' })
@@ -122,6 +127,7 @@ const handleSearch = async () => {
     totalPage.value = data.totalPages
     currentPage.value = data.currentPage
     loading.value = false
+    scrollToTarget()
   }
 }
 
@@ -145,21 +151,11 @@ aside {
   height: 100%;
 }
 
-.search-box {
-  display: flex;
-  flex-direction: column;
-  gap: $gap-s;
-}
-
 .search-info {
   scroll-margin-top: $gap-xl + $gap;
   white-space: pre-wrap;
   margin-block: $gap;
   text-align: center;
-}
-
-.search {
-  @include input_label_effect(0);
 }
 
 .not-found {
@@ -217,6 +213,7 @@ aside {
     }
 
     .search-info {
+      scroll-margin-top: 110rem;
       all: unset;
       white-space: pre-wrap;
       grid-column: 2;
@@ -229,26 +226,6 @@ aside {
       grid-column: 1;
       grid-row: 1;
     }
-  }
-}
-
-.loading-icon {
-  transition: opacity 100ms;
-  opacity: 0;
-}
-
-.loading {
-  opacity: 1;
-  animation: rotate 1s linear infinite;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
   }
 }
 </style>

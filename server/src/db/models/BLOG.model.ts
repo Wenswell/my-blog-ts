@@ -40,7 +40,9 @@ type BlogSortFields = 'title' | 'postAt' | 'editAt'
 
 interface GetBlogsOptions {
   query?: FilterQuery<AnBlog> // 查询条件
-  keyword?: string // 搜索关键词
+  keyword?: string
+  categ?: string
+  tags?: string[]
   page?: number
   limit?: number
   sort?: BlogSortFields // 排序字段
@@ -49,6 +51,8 @@ interface GetBlogsOptions {
 
 const findAll = async ({
   keyword,
+  categ,
+  tags,
   sort = 'editAt', // 默认排序字段
   order = -1, // 默认降序
   page = 1,
@@ -65,6 +69,20 @@ const findAll = async ({
       ],
     }
   }
+  if (categ) {
+    findQuery.$and = findQuery.$and || []
+    findQuery.$and.push({ categoryName: categ })
+  }
+
+  if (tags && tags.length) {
+    findQuery.$and = findQuery.$and || []
+    findQuery.$and.push({
+      tagNameList: {
+        $all: [...tags],
+      },
+    })
+  }
+  console.log('findQuery', findQuery)
 
   const sortQuery =
     sort === 'editAt' ? { postAt: order, editAt: order } : { [sort]: order }

@@ -74,13 +74,41 @@ export const constantRoutes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/dash/login.vue'),
+    component: () => import('@/views/dash/dash-login.vue'),
   },
 
   {
     path: '/dash',
     name: 'Dashbord',
+    redirect: '/dash/home',
     component: () => import('@/views/dash/index.vue'),
+    children: [
+      {
+        path: 'home',
+        name: 'Dhome',
+        component: () => import('@/views/dash/dash-home.vue'),
+      },
+      {
+        path: 'articles',
+        name: 'Darticles',
+        component: () => import('@/views/dash/dash-articles.vue'),
+      },
+      {
+        path: 'categories',
+        name: 'Dcategories',
+        component: () => import('@/views/dash/dash-categories.vue'),
+      },
+      {
+        path: 'tags',
+        name: 'Dtags',
+        component: () => import('@/views/dash/dash-tags.vue'),
+      },
+      {
+        path: 'account',
+        name: 'Daccount',
+        component: () => import('@/views/dash/dash-account.vue'),
+      },
+    ],
   },
 
   // { path: '/about', name: 'About', component: () => import('@/views/about/index.vue') },

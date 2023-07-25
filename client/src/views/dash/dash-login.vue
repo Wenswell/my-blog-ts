@@ -107,6 +107,9 @@ const onSubmit = async () => {
     };expires=${cookieExpirationDate.toUTCString()};path=/`
 
     popupRef.value?.notice.success(`[${verifyRes.data.account}]登陆成功`)
+    setTimeout(() => {
+      router.push('/dash/home')
+    }, 500)
   } catch (error) {
     popupRef.value?.notice.error('登录失败')
   }
@@ -120,7 +123,7 @@ const readTokenFromCookie = () => {
   if (localToken) {
     popupRef.value?.notice.success('欢迎回来，即将自动跳转', 1000)
     setTimeout(() => {
-      router.push('/dash')
+      router.push('/dash/home')
     }, 1000)
   }
 }

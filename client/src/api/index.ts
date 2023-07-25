@@ -88,9 +88,14 @@ export async function getDetailById(obj: { id: string }) {
   return await request('/blog/detail', 'get', obj)
 }
 
+export async function delBlogById(obj: { id: string }) {
+  return await request('/blog/delete', 'delete', obj)
+}
+
 export async function verifyAndGetToken(obj: IVerifyAndGetTokenParams) {
   return await request('/login', 'post', obj)
 }
+
 // export default function blogSearch({
 //   keyword,
 //   categoryName,

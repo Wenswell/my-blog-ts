@@ -174,6 +174,7 @@ aside {
   gap: $gap;
   height: 100%;
   max-width: 20rem;
+
   * {
     word-break: break-word;
     word-wrap: break-word;
@@ -183,6 +184,7 @@ aside {
 .content {
   white-space: pre-wrap;
 }
+
 .md-editor-dark {
   --md-bk-color: #333 !important;
 }

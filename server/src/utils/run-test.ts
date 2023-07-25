@@ -15,44 +15,70 @@ import { config } from 'dotenv'
 
 async function test() {
   // ↓ ↓ ↓ ↓ TEST AREA ↓ ↓ ↓ ↓
+  const keyword = '是'
+  const categ = '服务器'
+  const tags = ['CSS']
+  const reres = await Blog.find(
+    {
+      $or: [
+        { title: { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } },
+        { content: { $regex: keyword, $options: 'i' } },
+      ],
+      $and: [
+        { categoryName: categ },
+        {
+          tagNameList: {
+            $in: [...tags],
+          },
+        },
+      ],
+    },
+    {
+      _id: 0,
+      __v: 0,
+      content: 0,
+    },
+  )
+  console.log('reres', reres)
   //
 
   // console.log('addMockBlogs', await addMockBlogs(123));
-  console.log(
-    "sign('payload', 'ADMIN_KEY', { expiresIn: '10s' })",
-    sign({}, 'ADMIN_KEY', { expiresIn: '10s' }),
-  )
+  // console.log(
+  //   "sign('payload', 'ADMIN_KEY', { expiresIn: '10s' })",
+  //   sign({}, 'ADMIN_KEY', { expiresIn: '10s' }),
+  // )
 
-  const hash = await bcrypt.hash('aergagaerasergf', 10)
-  console.log(
-    " await bcrypt.hash('aergagaerasergf', 10);",
-    await bcrypt.hash('aergagaerasergf', 10),
-  )
-  console.log(
-    " await bcrypt.hash('aergagaerasergf', 10);",
-    await bcrypt.hash('aergagaerasergf', 10),
-  )
-  console.log(
-    " await bcrypt.hash('aergagaerasergf', 10);",
-    await bcrypt.hash('aergagaerasergf', 10),
-  )
-  console.log(
-    " await bcrypt.hash('aergagaerasergf', 10);",
-    await bcrypt.hash('aergagaerasergf', 10),
-  )
-  console.log('hash', hash)
+  // const hash = await bcrypt.hash('aergagaerasergf', 10)
+  // console.log(
+  //   " await bcrypt.hash('aergagaerasergf', 10);",
+  //   await bcrypt.hash('aergagaerasergf', 10),
+  // )
+  // console.log(
+  //   " await bcrypt.hash('aergagaerasergf', 10);",
+  //   await bcrypt.hash('aergagaerasergf', 10),
+  // )
+  // console.log(
+  //   " await bcrypt.hash('aergagaerasergf', 10);",
+  //   await bcrypt.hash('aergagaerasergf', 10),
+  // )
+  // console.log(
+  //   " await bcrypt.hash('aergagaerasergf', 10);",
+  //   await bcrypt.hash('aergagaerasergf', 10),
+  // )
+  // console.log('hash', hash)
 
-  const isValid = await bcrypt.compare(
-    'aergagaerasergf',
-    '$2b$10$dw0.ZQLeN1O4kFi4gibK/e/qbrwidufUqqTvdmfje.9uAIYaX5l7S',
-  )
-  console.log('isValid', isValid)
+  // const isValid = await bcrypt.compare(
+  //   'aergagaerasergf',
+  //   '$2b$10$dw0.ZQLeN1O4kFi4gibK/e/qbrwidufUqqTvdmfje.9uAIYaX5l7S',
+  // )
+  // console.log('isValid', isValid)
 
-  const { ADMIN_SECRET_KEY, USER_SECRET_KEY } = config().parsed!
-  console.log('config()', config())
-  console.log('config().parsed', config().parsed)
-  console.log('ADMIN_SECRET_KEY', ADMIN_SECRET_KEY)
-  console.log('USER_SECRET_KEY', USER_SECRET_KEY)
+  // const { ADMIN_SECRET_KEY, USER_SECRET_KEY } = config().parsed!
+  // console.log('config()', config())
+  // console.log('config().parsed', config().parsed)
+  // console.log('ADMIN_SECRET_KEY', ADMIN_SECRET_KEY)
+  // console.log('USER_SECRET_KEY', USER_SECRET_KEY)
   // const keyPair = crypto.generateKeyPairSync('rsa', {
   //   modulusLength: 2048, //密钥长度
   //   publicKeyEncoding: {

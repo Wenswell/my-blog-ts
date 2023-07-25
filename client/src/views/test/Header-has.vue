@@ -170,7 +170,7 @@ $ani-time: 200ms;
 .topbar {
   padding-bottom: $gap-s;
 
-  box-shadow: 0px 1px 2px 0px hsla(0, 0, 50%, 0.2);
+  box-shadow: 0px 1px 2px 0px hsla(0, 0%, 50%, 0.2);
 
   z-index: 1;
   position: absolute;
@@ -221,7 +221,7 @@ $ani-time: 200ms;
     margin-top: $gap;
     padding-bottom: $gap;
     height: 100%;
-    box-shadow: 0px 1px 2px 0px hsla(0, 0, 50%, 0.2);
+    box-shadow: 0px 1px 2px 0px hsla(0, 0%, 50%, 0.2);
 
     .topbar {
       grid-column-start: 2;

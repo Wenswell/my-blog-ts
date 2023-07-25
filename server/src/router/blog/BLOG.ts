@@ -60,9 +60,20 @@ const cacheKeySet = new Set()
 router.get(
   '/',
   asyncHandler(async (req, res) => {
+    // 确保tagNameList是数组
+    let tagNameList: string[] = []
+    if (Array.isArray(req.query.tagNameList)) {
+      // 确保数组不为空
+      if (req.query.tagNameList.length > 0) {
+        tagNameList = req.query.tagNameList as string[]
+      }
+    }
+
     const keyword: string = req.query.keyword ? String(req.query.keyword) : ''
-    // const categoryName: string = req.query.categoryName ? String(req.query.categoryName) : '';
-    // const tagNameList: string[] = req.query.tagNameList as Array<string> ? req.query.tagNameList : [];
+    const categoryName: string = req.query.categoryName
+      ? String(req.query.categoryName)
+      : ''
+    // const tagNameList: string[] = req.query.tagNameList as Array<string> ? req.query.tagNameList as string[] : [];
     const page: number = Number(req.query.page) || 1
     const limit: number = Number(req.query.limit) || 10
 
@@ -88,6 +99,8 @@ router.get(
 
     const find = {
       keyword,
+      categ: categoryName,
+      tags: tagNameList,
       page,
       limit,
       sort,
@@ -108,7 +121,9 @@ router.get(
     }
 
     // 生成缓存key
-    const cacheKey = `${keyword}-${page}`
+    const cacheKey = `${keyword}-${categoryName}-${tagNameList.join(
+      '-',
+    )}-${page}`
     // const cacheKey = `${keyword}`
 
     // 查找缓存
@@ -216,6 +231,8 @@ router.put(
           modifiedCount: number
         }
       if (acknowledged && modifiedCount) {
+        cacheKeySet.clear()
+        cacheMap.clear()
         await send.isSuccess(res, { id })
       } else {
         send.isError(res, {
@@ -252,6 +269,8 @@ router.delete(
       }
 
       if (acknowledged && deletedCount) {
+        cacheKeySet.clear()
+        cacheMap.clear()
         await send.isSuccess(res, { deletedId: id })
       }
     } catch (error) {

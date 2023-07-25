@@ -145,11 +145,11 @@ const handleSearch = async () => {
   totalPage.value = data.totalPages
   currentPage.value = data.currentPage
   loading.value = false
+  scrollToTarget()
   // }
 }
 const toCateg = (categ: string) => {
   router.push(`/categories/${encodeURIComponent(categ)}`)
-  scrollToTarget()
 }
 
 const categList = ref<ICategItem[]>([])
