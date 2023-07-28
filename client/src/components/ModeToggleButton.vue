@@ -58,7 +58,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watchEffect } from 'vue'
-
+import AdminStore from '@/store/index'
+import { Themes } from 'md-editor-v3'
+const Store = AdminStore()
 const MODE = ref<string>(
   window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
 )
@@ -73,6 +75,7 @@ const matchMediaListener = (e: MediaQueryListEvent) => {
 
 watchEffect(() => {
   document.documentElement.classList.toggle('dark', MODE.value === 'dark')
+  Store.updateDarkMode(MODE.value as Themes)
 })
 
 onMounted(() => {

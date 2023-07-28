@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 
 // load env
 import { config } from 'dotenv'
-config()
 
 // get env variables from parsed config
 const { DB_HOST, DB_PORT, DB_NAME } = config().parsed!

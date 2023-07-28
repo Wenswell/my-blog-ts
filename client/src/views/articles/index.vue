@@ -1,54 +1,58 @@
 <template>
-  <!-- <main> -->
+  <main>
+    <aside class="sidebar">
+      <div class="search-info">
+        {{ searchInfo }}
+      </div>
 
-  <aside class="sidebar">
-    <div class="search-info">
-      {{ searchInfo }}
+      <!-- <div class="search-box">
+        <label class="search">
+          <input
+            @keydown.enter="onSearch"
+            id="search"
+            class="search_field"
+            type="search"
+            placeholder=" "
+            v-model="keyword"
+          />
+          <span class="search_label">输入关键词</span>
+        </label>
+        <button
+          :disabled="loading"
+          :aria-disabled="loading"
+          class="search effect"
+          @click="onSearch"
+        >
+          搜索文章
+          <i
+            class="ri-loop-right-line loading-icon"
+            :class="{ loading: loading }"
+          ></i>
+        </button>
+      </div> -->
+      <SearchBox
+        v-model:keyword="keyword"
+        :loading="loading"
+        @on-search="onSearch"
+      />
+
+      <Pagination
+        @handleClick="scrollToTarget"
+        to-path="/articles"
+        :total-page="totalPage"
+        :current-page="currentPage"
+      />
+    </aside>
+    <div
+      title="没有查询到任何文章！"
+      v-show="!loading && !blogs.length"
+      class="not-found"
+    >
+      <h2 class="text" data-text="Noresult...">Noresult...</h2>
     </div>
 
-    <div class="search-box">
-      <label class="search">
-        <input
-          @keydown.enter="onSearch"
-          id="search"
-          class="search_field"
-          type="search"
-          placeholder=" "
-          v-model="keyword"
-        />
-        <span class="search_label">输入关键词</span>
-      </label>
-      <button
-        :disabled="loading"
-        :aria-disabled="loading"
-        class="search effect"
-        @click="onSearch"
-      >
-        搜索文章
-        <i
-          class="ri-loop-right-line loading-icon"
-          :class="{ loading: loading }"
-        ></i>
-      </button>
-    </div>
-
-    <Pagination
-      to-path="/articles"
-      :total-page="totalPage"
-      :current-page="currentPage"
-    />
-  </aside>
-  <div
-    title="没有查询到任何文章！"
-    v-show="!loading && !blogs.length"
-    class="not-found"
-  >
-    <h2 class="text" data-text="Noresult...">Noresult...</h2>
-  </div>
-
-  <PostList :blogs="blogs" />
-
-  <!-- </main> -->
+    <PostList :blogs="blogs" />
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +62,7 @@ import { computed, ref, watchEffect } from 'vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import Pagination from '@/components/Pagination.vue'
+import SearchBox from '@/components/SearchBox.vue'
 const route = useRoute()
 
 let blogs = ref<IBlogPrew[]>([])
@@ -73,6 +78,20 @@ const loading = ref(false)
 let lastSearchTime = 0
 
 let timeout = 100
+
+const scrollToTarget = () => {
+  const target = document.querySelector('.search-info')
+  console.log("target", target)
+  // const navHeight = document.querySelector('header')?.offsetHeight
+  // console.log('navHeight', navHeight)
+  // console.log('navHeight', navHeight)
+  // target.value?.scrollIntoView({ block: "start" })
+  target?.scrollIntoView({
+    block: 'start',
+    behavior: 'smooth',
+    inline: 'nearest',
+  } as any)
+}
 
 const searchInfo = computed(() => {
   const queryKeyword = route.query.keyword
@@ -99,6 +118,8 @@ const onSearch = () => {
 }
 
 const handleSearch = async () => {
+  window.scrollTo(0, 0)
+
   loading.value = true
   const now = Date.now()
   if (now - lastSearchTime > timeout) {
@@ -109,6 +130,7 @@ const handleSearch = async () => {
     totalPage.value = data.totalPages
     currentPage.value = data.currentPage
     loading.value = false
+    scrollToTarget()
   }
 }
 
@@ -116,6 +138,9 @@ watchEffect(() => {
   keyword.value = route.query.keyword as string
   handleSearch()
 })
+// onMounted(()=>{
+//   window.scrollTo(0, 0)
+// })
 </script>
 
 <style lang="scss" scoped>
@@ -132,21 +157,11 @@ aside {
   height: 100%;
 }
 
-.search-box {
-  display: flex;
-  flex-direction: column;
-  gap: $gap-s;
-}
-
 .search-info {
   scroll-margin-top: $gap-xl + $gap;
   white-space: pre-wrap;
   margin-block: $gap;
   text-align: center;
-}
-
-.search {
-  @include input_label_effect(0);
 }
 
 .not-found {
@@ -204,6 +219,7 @@ aside {
     }
 
     .search-info {
+      scroll-margin-top: 110rem;
       all: unset;
       white-space: pre-wrap;
       grid-column: 2;
@@ -216,26 +232,6 @@ aside {
       grid-column: 1;
       grid-row: 1;
     }
-  }
-}
-
-.loading-icon {
-  transition: opacity 100ms;
-  opacity: 0;
-}
-
-.loading {
-  opacity: 1;
-  animation: rotate 1s linear infinite;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
   }
 }
 </style>

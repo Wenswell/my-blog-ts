@@ -8,11 +8,11 @@ export interface Category extends Document {
   categoryName: string
   blogs: AnBlog[] // 添加虚拟属性类型
   count: number
-  createAt: Date
+  createdAt: Date
   blogList: Types.ObjectId[]
   updateBlogsCategory: (name: string) => Promise<void>
   deleteBlogsCategory: () => Promise<void>
-  getBlogsInCateg: () => Promise<object>
+  findAllInCateg: () => Promise<object>
 }
 
 const categorySchema = new Schema({
@@ -25,7 +25,7 @@ const categorySchema = new Schema({
       ref: 'Blog',
     },
   ],
-  createAt: { type: Date, default: new Date() },
+  createdAt: { type: Date, default: new Date() },
 })
 
 categorySchema.virtual('blogs', {
@@ -50,7 +50,7 @@ categorySchema.methods.updateBlogsCategory = async function (
   }
 }
 
-categorySchema.methods.getBlogsInCateg = async function (this: Category) {
+categorySchema.methods.findAllInCateg = async function (this: Category) {
   // 根据blogList查询Blog
   const blogs = await Blog.find(
     {
@@ -85,30 +85,35 @@ Category.findOne({ id: '-1' })
       await new Category({
         id: '-1',
         categoryName: '无',
-        createAt: new Date(0),
+        createdAt: new Date(0),
       }).save()
   })
   .catch((err) => {
     console.log(err)
   })
 
-const addCateg = (newName: string) => {
+const addOne = (newName: string) => {
   const newCateg = new Category({
     id: genCategoryId(),
     categoryName: newName,
-    createAt: new Date(),
+    createdAt: new Date(),
   })
   return newCateg.save()
 }
 
-const getAllCateg = async () => {
+const findAll = async () => {
   return Category.find({}, { _id: 0, id: 1, categoryName: 1, count: 1 })
 }
 
-const getBlogsByCategName = async (categoryName: string) => {
+const getBlogsByName = async (categoryName: string) => {
   const categ = await Category.findOne({ categoryName })
   // const categ = await Category.findOne({ id })
-  if (!categ) failure.cantFindByNmae({ type: 'category', name: categoryName })
+  if (!categ)
+    failure.cantFindByField({
+      type: 'category',
+      id: categoryName,
+      field: 'categoryName',
+    })
 
   // const updatedCateg = await Category.findOneAndUpdate(
   //   { id },
@@ -120,12 +125,12 @@ const getBlogsByCategName = async (categoryName: string) => {
 
   // await updatedCateg.updateBlogsCategory(newName)
 
-  const asdfasddgass = await (categ as Category).getBlogsInCateg()
+  const asdfasddgass = await (categ as Category).findAllInCateg()
   console.log('asdfasddgass', asdfasddgass)
   return asdfasddgass
 }
 
-const updateCategById = async ({
+const updateOneById = async ({
   id,
   newName,
 }: {
@@ -133,7 +138,8 @@ const updateCategById = async ({
   newName: string
 }) => {
   const categ = await Category.findOne({ id })
-  if (!categ || id == '-1') failure.cantFindById({ type: 'category', id })
+  if (!categ || id == '-1')
+    failure.cantFindByField({ type: 'category', id, field: 'id' })
 
   const updatedCateg = await Category.findOneAndUpdate(
     { id },
@@ -153,9 +159,10 @@ const updateCategById = async ({
   return { id: categId, categoryName, oldName: categ?.categoryName }
 }
 
-const deleteCategById = async (id: string) => {
+const deleteOneById = async (id: string) => {
   const categ = await Category.findOne({ id })
-  if (!categ || id == '-1') failure.cantFindById({ type: 'category', id })
+  if (!categ || id == '-1')
+    failure.cantFindByField({ type: 'category', id, field: 'id' })
 
   const deletedCateg = await Category.findOneAndDelete({ id }, { new: true })
 
@@ -176,7 +183,7 @@ export async function updateCategByCategName(
   if (isRemove === false && categoryName !== '无') {
     const hasTag = await Category.findOne({ categoryName }, { categoryName: 1 })
     console.log('hasTag', hasTag)
-    if (!hasTag) await addCateg(categoryName)
+    if (!hasTag) await addOne(categoryName)
   }
 
   const ops = isRemove
@@ -186,9 +193,9 @@ export async function updateCategByCategName(
 }
 
 export const DBcateg = {
-  addCateg,
-  getAllCateg,
-  updateCategById,
-  deleteCategById,
-  getBlogsByCategName,
+  addOne,
+  findAll,
+  updateOneById,
+  deleteOneById,
+  getBlogsByName,
 }

@@ -5,7 +5,7 @@ import Joi from 'joi'
 import asyncHandler from 'express-async-handler'
 
 const AddBlogSchema = Joi.object({
-  title: Joi.string().required().max(30),
+  title: Joi.string().required().min(2).max(30),
   description: Joi.string().required().max(200),
   categoryName: Joi.string().min(2).max(30),
   tagNameList: Joi.array().items(Joi.string().min(2)),
@@ -14,8 +14,8 @@ const AddBlogSchema = Joi.object({
 })
 
 const UpdateBlogSchema = Joi.object({
-  id: Joi.string().required(),
-  title: Joi.string().max(30),
+  id: Joi.string().length(10).required(),
+  title: Joi.string().min(2).max(30),
   description: Joi.string().max(200),
   categoryName: Joi.string(),
   tagNameList: Joi.array().items(Joi.string()),
@@ -23,8 +23,8 @@ const UpdateBlogSchema = Joi.object({
   descImg: Joi.string(),
 })
 
-const deleteBlogSchema = Joi.object({
-  id: Joi.string().required(),
+const BlogIdSchema = Joi.object({
+  id: Joi.string().length(10).required(),
 })
 
 interface AddBlog {
@@ -57,12 +57,28 @@ const cacheMap = new Map<string, object>()
 // 缓存key集合,用于记录缓存访问顺序
 const cacheKeySet = new Set()
 
+function clearCache() {
+  cacheKeySet.clear()
+  cacheMap.clear()
+}
+
 router.get(
   '/',
   asyncHandler(async (req, res) => {
+    // 确保tagNameList是数组
+    let tagNameList: string[] = []
+    if (Array.isArray(req.query.tagNameList)) {
+      // 确保数组不为空
+      if (req.query.tagNameList.length > 0) {
+        tagNameList = req.query.tagNameList as string[]
+      }
+    }
+
     const keyword: string = req.query.keyword ? String(req.query.keyword) : ''
-    // const categoryName: string = req.query.categoryName ? String(req.query.categoryName) : '';
-    // const tagNameList: string[] = req.query.tagNameList as Array<string> ? req.query.tagNameList : [];
+    const categoryName: string = req.query.categoryName
+      ? String(req.query.categoryName)
+      : ''
+    // const tagNameList: string[] = req.query.tagNameList as Array<string> ? req.query.tagNameList as string[] : [];
     const page: number = Number(req.query.page) || 1
     const limit: number = Number(req.query.limit) || 10
 
@@ -88,6 +104,8 @@ router.get(
 
     const find = {
       keyword,
+      categ: categoryName,
+      tags: tagNameList,
       page,
       limit,
       sort,
@@ -108,7 +126,9 @@ router.get(
     }
 
     // 生成缓存key
-    const cacheKey = `${keyword}-${page}`
+    const cacheKey = `${keyword}-${categoryName}-${tagNameList.join(
+      '-',
+    )}-${page}`
     // const cacheKey = `${keyword}`
 
     // 查找缓存
@@ -121,7 +141,7 @@ router.get(
       reresult = cacheResult
     } else {
       // 未命中,查询数据库
-      const result = await DBblog.getBlogs(find)
+      const result = await DBblog.findAll(find)
 
       reresult = result as ResultType
 
@@ -148,6 +168,29 @@ router.get(
   }),
 )
 
+router.get(
+  '/detail',
+  asyncHandler(async (req, res) => {
+    const verifiedResult = BlogIdSchema.validate(req.query)
+    if (verifiedResult.error) {
+      send.isError(res, verifiedResult.error.details[0].message)
+
+      return
+    }
+
+    const id: string = (verifiedResult.value as { id: string }).id
+
+    try {
+      const rrres = (await DBblog.findOneById(id)) as object
+
+      await send.isSuccess(res, rrres)
+    } catch (error) {
+      send.isCustomError(res, error as object)
+      return
+    }
+  }),
+)
+
 router.post(
   '/add',
   asyncHandler(async (req, res) => {
@@ -161,9 +204,9 @@ router.post(
       return
     }
     try {
-      const { id } = (await DBblog.addBlog(
-        verifiedResult.value as AddBlog,
-      )) as { id: string }
+      const { id } = (await DBblog.addOne(verifiedResult.value as AddBlog)) as {
+        id: string
+      }
 
       await send.isSuccess(res, { id })
     } catch (error) {
@@ -187,12 +230,14 @@ router.put(
     const upppp = { id, update: { ...rest } }
     try {
       const { acknowledged, matchedCount, modifiedCount } =
-        (await DBblog.updateBlogById(upppp)) as {
+        (await DBblog.updateOneById(upppp)) as {
           acknowledged: boolean
           matchedCount: number
           modifiedCount: number
         }
       if (acknowledged && modifiedCount) {
+        cacheKeySet.clear()
+        cacheMap.clear()
         await send.isSuccess(res, { id })
       } else {
         send.isError(res, {
@@ -211,7 +256,7 @@ router.put(
 router.delete(
   '/delete',
   asyncHandler(async (req, res) => {
-    const verifiedResult = deleteBlogSchema.validate(req.query)
+    const verifiedResult = BlogIdSchema.validate(req.query)
     if (verifiedResult.error) {
       send.isError(res, verifiedResult.error.details[0].message)
 
@@ -221,7 +266,7 @@ router.delete(
     const id: string = (verifiedResult.value as { id: string }).id
 
     try {
-      const { acknowledged, deletedCount } = (await DBblog.deleteBlogById(
+      const { acknowledged, deletedCount } = (await DBblog.deleteOneById(
         id,
       )) as {
         acknowledged: boolean
@@ -229,13 +274,17 @@ router.delete(
       }
 
       if (acknowledged && deletedCount) {
+        cacheKeySet.clear()
+        cacheMap.clear()
         await send.isSuccess(res, { deletedId: id })
       }
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),
 )
+
+export { clearCache }
 
 export default router

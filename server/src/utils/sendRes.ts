@@ -31,7 +31,7 @@ function isMongoError(res: Response, error: object) {
   isError(res, err)
 }
 
-function isCantFindByIdError(res: Response, error: object) {
+function isCustomError(res: Response, error: object) {
   const { name, message } = error as { name: string; message: string }
   const err = { name, message }
   console.error(`\x1b[31m 失败：${JSON.stringify(err)} \x1b[0m`)
@@ -43,5 +43,5 @@ export const send = {
   isSuccess,
   isError,
   isMongoError,
-  isCantFindByIdError,
+  isCustomError,
 }

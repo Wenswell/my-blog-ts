@@ -1,20 +1,25 @@
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
+import { Themes } from 'md-editor-v3'
 
-const STORE_NAME = 'auth_info'
-interface UserInfo {
-  id?: number
-  account?: string
-  password?: string
-  accessToken?: string
-  refreshToken?: string
-}
-const DEFAULT_INFO = {
-  id: 0,
-  account: '',
-  password: '',
-  accessToken: '',
-  refreshToken: '',
+const STORE_NAME = 'information'
+// interface UserInfo {
+//   id?: number
+//   account?: string
+//   password?: string
+//   accessToken?: string
+//   refreshToken?: string
+// }
+// const DEFAULT_INFO = {
+//   id: 0,
+//   account: '',
+//   password: '',
+//   accessToken: '',
+//   refreshToken: '',
+// }
+
+const CONFIG = {
+  theme: 'light',
 }
 
 // useStore 可以是 useUser、useCart 之类的任何东西
@@ -22,36 +27,45 @@ const DEFAULT_INFO = {
 const AdminStore = defineStore('admin', {
   state: () => {
     return {
-      user: useStorage(STORE_NAME, DEFAULT_INFO, localStorage, {
+      // user: useStorage(STORE_NAME, DEFAULT_INFO, localStorage, {
+      //   mergeDefaults: true,
+      // }),
+      config: useStorage(STORE_NAME, CONFIG, localStorage, {
         mergeDefaults: true,
       }),
     }
   },
   actions: {
-    updateUserInfo(newInfo: Partial<UserInfo>) {
-      this.user = {
-        ...this.user,
-        ...newInfo,
-      }
+    updateDarkMode(isDark: Themes) {
+      this.config.theme = isDark
     },
-    updateAccessToken(newToken: string) {
-      this.user.accessToken = newToken
-    },
-    cleanInfo() {
-      this.user = DEFAULT_INFO
-    },
+    // updateUserInfo(newInfo: Partial<UserInfo>) {
+    //   this.user = {
+    //     ...this.user,
+    //     ...newInfo,
+    //   }
+    // },
+    // updateAccessToken(newToken: string) {
+    //   this.user.accessToken = newToken
+    // },
+    // cleanInfo() {
+    //   this.user = DEFAULT_INFO
+    // },
   },
   getters: {
-    getUserInfo(state) {
-      return state.user
+    getIsDark(state) {
+      return state.config.theme
     },
-    getToken(state) {
-      return {
-        access: state.user.accessToken,
-        refresh: state.user.refreshToken,
-      }
-    },
+    // getUserInfo(state) {
+    //   return state.user
+    // },
+    // getToken(state) {
+    //   return {
+    //     access: state.user.accessToken,
+    //     refresh: state.user.refreshToken,
+    //   }
+    // },
   },
 })
 
-export { AdminStore }
+export default AdminStore

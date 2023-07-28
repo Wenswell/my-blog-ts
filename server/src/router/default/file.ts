@@ -1,3 +1,4 @@
+import { send } from '@/utils/sendRes'
 import { Router } from 'express'
 import fs from 'fs'
 import path from 'path'
@@ -59,12 +60,14 @@ router.post('/upload', (req, res) => {
     fileNameList.push(`upload/${newFilename}`)
   }
 
-  console.log('Upload new files', fileNameList)
-  res.status(200).send({
-    code: 200,
-    msg: 'ok',
-    data: fileNameList,
-  })
+  void send.isSuccess(res, { data: fileNameList })
+
+  // console.log('Upload new files', fileNameList)
+  // res.status(200).send({
+  //   code: 200,
+  //   msg: 'ok',
+  //   data: fileNameList,
+  // })
 })
 
 router.put('/', (req, res) => {

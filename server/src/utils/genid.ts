@@ -10,3 +10,4 @@ const alphabet =
 export const genBlogId = nanoid.customAlphabet(SIMPLEalphabet, 10)
 export const genCategoryId = nanoid.customAlphabet(alphabet, 7)
 export const genTagId = nanoid.customAlphabet(alphabet, 6)
+export const genUserId = nanoid.customAlphabet(alphabet, 5)

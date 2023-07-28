@@ -3,6 +3,7 @@ import { send } from '@/utils/sendRes'
 import { Router } from 'express'
 import Joi from 'joi'
 import asyncHandler from 'express-async-handler'
+import { clearCache } from './BLOG'
 
 const AddTagSchema = Joi.object({
   tagName: Joi.string().required().min(2).max(30),
@@ -13,12 +14,12 @@ const GetBlogSchema = Joi.object({
 })
 
 const UpdateTagSchema = Joi.object({
-  id: Joi.string().required(),
+  id: Joi.string().length(6).required(),
   tagName: Joi.string().required().min(2).max(30),
 })
 
 const DeleteTagSchema = Joi.object({
-  id: Joi.string().required(),
+  id: Joi.string().length(6).required(),
 })
 
 const router = Router()
@@ -26,7 +27,7 @@ const router = Router()
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const asdfasdfasg = await DBtag.getAllTag()
+    const asdfasdfasg = await DBtag.findAll()
     await send.isSuccess(res, asdfasdfasg)
   }),
 )
@@ -56,7 +57,9 @@ router.get(
       page?: number
     }
 
-    const tagName = (verifiedResult.value as FindBlog).tagName
+    const tagName = decodeURIComponent(
+      (verifiedResult.value as FindBlog).tagName,
+    )
     const page = (verifiedResult.value as FindBlog)?.page || 1
 
     interface ResultType {
@@ -85,9 +88,9 @@ router.get(
         reresult = cacheResult
       } else {
         // 未命中,查询数据库
-        const blogs = (await DBtag.getBlogsByTagName(tagName)) as []
+        const blogs = (await DBtag.getBlogsByName(tagName)) as []
 
-        // const result = await DBblog.getBlogs(find)
+        // const result = await DBblog.findAll(find)
         const totalCount = blogs.length
         const totalPages = Math.ceil(totalCount / limit)
 
@@ -118,7 +121,7 @@ router.get(
         blogs: currentBlogs,
       })
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),
@@ -134,12 +137,14 @@ router.post(
       return
     }
 
-    const { tagName: addTagName } = verifiedResult.value as { tagName: string }
+    const { tagName: addOneName } = verifiedResult.value as { tagName: string }
     try {
-      const { id, tagName } = (await DBtag.addTag(addTagName)) as {
+      const { id, tagName } = (await DBtag.addOne(addOneName)) as {
         id: string
         tagName: string
       }
+
+      clearCache()
 
       await send.isSuccess(res, { id, tagName })
     } catch (error) {
@@ -162,16 +167,18 @@ router.put(
     const { id: updateTagId, tagName: updateTagName } =
       verifiedResult.value as { id: string; tagName: string }
     try {
-      const updateResult = await DBtag.updateTagById({
+      const updateResult = await DBtag.updateOneById({
         id: updateTagId,
         newName: updateTagName,
       })
 
-      if (!updateResult) throw 'updateTagById failed'
+      if (!updateResult) throw 'updateOneById failed'
+
+      clearCache()
 
       await send.isSuccess(res, updateResult)
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),
@@ -194,9 +201,11 @@ router.delete(
         tagName: string
       }
 
+      clearCache()
+
       await send.isSuccess(res, { deletedId: id, deletedTagName: tagName })
     } catch (error) {
-      send.isCantFindByIdError(res, error as object)
+      send.isCustomError(res, error as object)
       return
     }
   }),

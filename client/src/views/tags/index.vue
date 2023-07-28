@@ -1,62 +1,67 @@
 <template>
-  <!-- <main> -->
+  <main>
+    <aside class="sidebar">
+      <div class="search-info">
+        {{ searchInfo }}
+      </div>
+      <ul class="tag-box _selector">
+        <li
+          v-for="tag in tagList"
+          :key="tag.id"
+          :class="{ active: isCurrent(tag) }"
+        >
+          <button
+            @click="toTag(tag.tagName)"
+            :style="{
+              'font-size': (Math.log10(tag.count * 2) - 0.6).toFixed(2) + 'em',
+            }"
+            :title="isCurrent(tag) ? '就在这里' : '点击前往'"
+            :aria-label="
+              isCurrent(tag)
+                ? '当前页面为' + tag.tagName + '分类'
+                : '点击前往' + tag.tagName + '分类'
+            "
+            :aria-current="isCurrent(tag) ? 'page' : false"
+          >
+            <i
+              :class="
+                isCurrent(tag) ? 'ri-price-tag-3-fill' : 'ri-price-tag-3-line'
+              "
+            ></i>
+            {{ tag.tagName }}
+            <span>{{ tag.count }}</span>
+          </button>
+        </li>
+      </ul>
 
-  <aside class="sidebar">
-    <div class="search-info">
-      {{ searchInfo }}
+      <Pagination
+        @handleClick="scrollToTarget"
+        to-path="/tags"
+        :total-page="totalPage"
+        :current-page="currentPage"
+      />
+    </aside>
+
+    <div
+      title="没有查询到任何文章！"
+      v-show="!loading && !blogs.length"
+      class="not-found"
+    >
+      <h2 class="text" data-text="Noresult...">Noresult...</h2>
     </div>
-    <!-- 
-    <div class="search-box">
-      <label class="search">
-        <input @keydown.enter="onSearch" id="search" class="search_field" type="search" placeholder=" " v-model="keyword">
-        <span class="search_label">输入关键词</span>
-      </label>
-      <button :disabled="loading" :aria-disabled="loading" class="search effect" @click="onSearch">搜索文章
-        <i class="ri-loop-right-line loading-icon" :class="{ loading: loading }"></i>
-      </button>
-    </div>
- -->
-    <ul class="tag-box">
-      <li
-        :style="{ zoom: Math.log10(tag.count + 10) - 0.6 }"
-        @click="scrollToTarget"
-        v-for="tag in tagList"
-        :key="tag.id"
-      >
-        <router-link :to="'/tags/' + tag.tagName">
-          {{ tag.tagName }}
-          <!-- <span>{{ tag.count }}</span> -->
-        </router-link>
-      </li>
-    </ul>
 
-    <Pagination
-      to-path="/tags"
-      :total-page="totalPage"
-      :current-page="currentPage"
-    />
-  </aside>
-
-  <div
-    title="没有查询到任何文章！"
-    v-show="!loading && !blogs.length"
-    class="not-found"
-  >
-    <h2 class="text" data-text="Noresult...">Noresult...</h2>
-  </div>
-
-  <PostList :blogs="blogs" />
-
-  <!-- </main> -->
+    <PostList :blogs="blogs" />
+  </main>
 </template>
 
 <script setup lang="ts">
 import PostList from '@/components/PostList.vue'
 import { IBlogPrew, ITagItem, getTag, getBlogByTagName } from '@/api/index'
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ComputedRef, ref, watchEffect } from 'vue'
 // import router from '@/router';
 import { useRoute } from 'vue-router'
 import Pagination from '@/components/Pagination.vue'
+import router from '@/router'
 const route = useRoute()
 
 let blogs = ref<IBlogPrew[]>([])
@@ -65,10 +70,9 @@ const count = ref(0)
 // const target = ref<HTMLElement | null>(null)
 const scrollToTarget = () => {
   const target = document.querySelector('.search-info')
-
-  const navHeight = document.querySelector('header')?.offsetHeight
-  console.log('navHeight', navHeight)
-  console.log('navHeight', navHeight)
+  // const navHeight = document.querySelector('header')?.offsetHeight
+  // console.log('navHeight', navHeight)
+  // console.log('navHeight', navHeight)
   // target.value?.scrollIntoView({ block: "start" })
   target?.scrollIntoView({
     block: 'start',
@@ -87,18 +91,20 @@ const loading = ref(false)
 
 // let timeout = 100
 
+const isCurrent = (tag: ITagItem) => {
+  return tag.tagName == safeName.value
+}
+
 const searchInfo = computed(() => {
-  const queryKeyword = route.params.tagName
-    ? (route.params.tagName as string)
-    : ''
+  const queryKeyword = safeName.value ? (safeName.value as string) : ''
 
   const displayKeyword =
     queryKeyword.length < 6
       ? queryKeyword
       : queryKeyword.substring(0, 5) + '...'
 
-  const str = route.params.tagName
-    ? route.params.tagName == '无'
+  const str = safeName.value
+    ? safeName.value == '无'
       ? `未标签文章\n`
       : `「${displayKeyword}」标签\n`
     : `全部文章\n`
@@ -115,15 +121,22 @@ const searchInfo = computed(() => {
 //     : router.push({ path: '/articles' })
 // }
 
+const safeName: ComputedRef<string> = computed(() => {
+  return route.params.tagName
+    ? decodeURIComponent(route.params.tagName as string)
+    : '无'
+})
+
 const handleSearch = async () => {
+  window.scrollTo(0, 0)
   loading.value = true
   // const now = Date.now()
   // if (now - lastSearchTime > timeout) {
   // lastSearchTime = now
-  const paramsTagName = route.params.tagName ? route.params.tagName : '无'
+  const paramsTagName = safeName.value
   const page = route.query.page ? Number(route.query.page) : 1
   const { data } = await getBlogByTagName({
-    tagName: paramsTagName as string,
+    tagName: paramsTagName,
     page,
   })
   blogs.value = data.blogs
@@ -132,6 +145,11 @@ const handleSearch = async () => {
   currentPage.value = data.currentPage
   loading.value = false
   // }
+}
+const toTag = (tag: string) => {
+  // router.push(`/tags/${tag}`)
+  router.push(`/tags/${encodeURIComponent(tag)}`)
+  scrollToTarget()
 }
 
 const tagList = ref<ITagItem[]>([])
@@ -149,7 +167,7 @@ console.log('route', route)
 console.log('route', route)
 console.log('route', route)
 watchEffect(() => {
-  nowTagName.value = route.params.tagName as string
+  nowTagName.value = safeName.value as string
   handleSearch()
 })
 </script>
@@ -169,29 +187,18 @@ aside {
 }
 
 .tag-box {
-  margin-bottom: $gap;
   display: block;
-  // padding-bottom: $gap;
-  // display: flex;
-  // flex-wrap: wrap;
-  // gap: $gap-xs $gap-s;
-  // justify-content: center;
 
   li {
-    justify-content: normal;
     display: inline-block;
-    outline: solid;
-    padding-inline: calc($gap-s/2) $gap-s;
     margin-top: $gap-s;
     margin-right: $gap-s;
-    // flex-basis: 40%;
-    // flex-grow: 1;
-    // gap: $gap-px;
-    // position: relative;
-    // overflow: hidden;
-    // @include mild_bg_prime_txt;
 
-    a {
+    button {
+      padding: 0 0 0 $gap-s;
+
+      // &:hover {}
+
       // display: block;
       // text-align: center;
       // display: flex;
@@ -201,6 +208,9 @@ aside {
     }
 
     span {
+      padding-inline: calc($gap-s/2) $gap-s;
+      font-size: 0.85rem;
+      opacity: 0.7;
       // top: -$gap-s;
       // right: -$gap;
       // font-weight: bold;
@@ -286,7 +296,7 @@ aside {
 
       li span {
         top: -$gap;
-        font-size: $fz-xxxl;
+        // font-size: $fz-xxxl;
       }
     }
   }

@@ -1,8 +1,10 @@
 <template>
   <Header />
-  <main>
-    <router-view />
-  </main>
+  <router-view v-slot="{ Component }">
+    <transition name="route">
+      <component :is="Component" />
+    </transition>
+  </router-view>
   <footer>
     <p>powered by myself</p>
   </footer>

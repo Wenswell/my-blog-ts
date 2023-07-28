@@ -1,5 +1,7 @@
-import request from '@/utils/require'
-import { AxiosPromise } from 'axios'
+import request, { baseURL } from '@/utils/require'
+import { AxiosResponse } from 'axios'
+
+export { baseURL }
 
 export interface IBlogPrew {
   id: string
@@ -10,6 +12,20 @@ export interface IBlogPrew {
   postAt: string
   editAt: string
   descImg: string
+}
+export interface IAddAnBlog {
+  title: string
+  description: string
+  categoryName: string
+  tagNameList: string[]
+  content: string
+  descImg?: string
+}
+export interface IEditAnBlog extends IAddAnBlog {
+  id: string
+}
+export interface IBlogDetail extends IBlogPrew {
+  content: string
 }
 
 export interface ICategItem {
@@ -24,13 +40,14 @@ export interface ITagItem {
   count: number
 }
 
-interface IBlogSearchResult extends AxiosPromise<any> {
+export interface NormalResult extends AxiosResponse {
   success: boolean
   message: string
   data: {
-    totalCount: number
-    totalPages: number
-    blogs: IBlogPrew[]
+    [x: string]: any
+    // totalCount: number
+    // totalPages: number
+    // blogs: IBlogPrew[]
   }
 }
 
@@ -54,30 +71,75 @@ interface IGetBlogByTagNameParams {
   pageSize?: number
 }
 
-export async function searchBlogs(
-  obj: ISearchBlogParams,
-): Promise<IBlogSearchResult> {
+interface IVerifyAndGetTokenParams {
+  account: string
+  password: string
+}
+
+export async function uploadImg(obj: object) {
+  const safsdf = await request('/files/upload', 'post', obj, true)
+  return safsdf
+}
+
+export async function searchBlogs(obj: ISearchBlogParams) {
   return await request('/blog', 'get', obj)
 }
 
-export async function getCateg(): Promise<IBlogSearchResult> {
-  return await request('/categ', 'get')
+export async function addAnBlog(obj: IAddAnBlog) {
+  return await request('/blog/add', 'post', obj)
 }
 
-export async function getTag(): Promise<IBlogSearchResult> {
+export async function updateAnBlog(obj: IEditAnBlog) {
+  return await request('/blog/update', 'put', obj)
+}
+
+export async function getCateg() {
+  const asdfs = await request('/categ', 'get')
+  console.log('getCateggetCateg', asdfs)
+  return asdfs
+}
+
+export async function getTag() {
   return await request('/tag', 'get')
 }
 
-export async function getBlogByCategName(
-  obj: IGetBlogByCategNameParams,
-): Promise<IBlogSearchResult> {
+export async function getBlogByCategName(obj: IGetBlogByCategNameParams) {
   return await request('/categ/blogs', 'get', obj)
 }
 
-export async function getBlogByTagName(
-  obj: IGetBlogByTagNameParams,
-): Promise<IBlogSearchResult> {
+export async function getBlogByTagName(obj: IGetBlogByTagNameParams) {
   return await request('/tag/blogs', 'get', obj)
+}
+
+export async function getDetailById(obj: { id: string }) {
+  return await request('/blog/detail', 'get', obj)
+}
+
+export async function delBlogById(obj: { id: string }) {
+  return await request('/blog/delete', 'delete', obj)
+}
+
+export async function delTagById(obj: { id: string }) {
+  return await request('/tag/delete', 'delete', obj)
+}
+
+export async function delCategById(obj: { id: string }) {
+  return await request('/categ/delete', 'delete', obj)
+}
+
+export async function verifyAndGetToken(obj: IVerifyAndGetTokenParams) {
+  return await request('/login', 'post', obj)
+}
+
+export async function updateTagById(obj: { id: string; tagName: string }) {
+  return await request('/tag/update', 'put', obj)
+}
+
+export async function updateCategById(obj: {
+  id: string
+  categoryName: string
+}) {
+  return await request('/categ/update', 'put', obj)
 }
 
 // export default function blogSearch({
@@ -86,7 +148,7 @@ export async function getBlogByTagName(
 //   tagNameList,
 //   page,
 //   pageSize,
-// }: ISearchBlogParams): Promise<IBlogSearchResult> {
+// }: ISearchBlogParams): Promise<NormalResponse> {
 //   return request('/blog', 'get', {
 //     keyword,
 //     categoryName,

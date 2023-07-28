@@ -3,12 +3,12 @@ import { genTagId } from '@/utils/genid'
 import { Schema, model, Document, ObjectId, Types } from 'mongoose'
 import { AnBlog, Blog } from './BLOG.model'
 
-export interface Tag extends Document {
+export interface AnTag extends Document {
   id: string
   tagName: string
   blogs: AnBlog[] // 添加虚拟属性类型
   count: number
-  createAt: Date
+  createdAt: Date
   blogList: Types.ObjectId[]
   updateBlogsTag: (oldName: string, newName: string) => Promise<void>
   deleteBlogsTag: (oldName: string) => Promise<void>
@@ -24,7 +24,7 @@ const tagSchema = new Schema({
       ref: 'Blog',
     },
   ],
-  createAt: { type: Date, default: new Date() },
+  createdAt: { type: Date, default: new Date() },
 })
 
 tagSchema.virtual('blogs', {
@@ -34,7 +34,7 @@ tagSchema.virtual('blogs', {
 })
 
 tagSchema.methods.updateBlogsTag = async function (
-  this: Tag,
+  this: AnTag,
   oldName: string,
   newName: string,
 ) {
@@ -54,7 +54,10 @@ tagSchema.methods.updateBlogsTag = async function (
   }
 }
 
-tagSchema.methods.deleteBlogsTag = async function (this: Tag, oldName: string) {
+tagSchema.methods.deleteBlogsTag = async function (
+  this: AnTag,
+  oldName: string,
+) {
   const blogs = await Blog.find({
     _id: { $in: this.blogList },
   })
@@ -68,32 +71,32 @@ tagSchema.methods.deleteBlogsTag = async function (this: Tag, oldName: string) {
   }
 }
 
-const Tag = model<Tag>('tag', tagSchema)
+const Tag = model<AnTag>('tag', tagSchema)
 
-const getBlogsByTagName = async (tagName: string) => {
+const getBlogsByName = async (tagName: string) => {
   const tag = await Tag.findOne({ tagName }).populate('blogs')
   console.log('tag', tag)
   if (!tag) {
-    failure.cantFindByNmae({ type: 'tag', name: tagName })
+    failure.cantFindByField({ type: 'tag', id: tagName, field: 'tagName' })
     return
   }
   return tag.blogs
 }
 
-const getAllTag = async () => {
+const findAll = async () => {
   return Tag.find({}, { _id: 0, id: 1, tagName: 1, count: 1 })
 }
 
-const addTag = (newName: string) => {
+const addOne = (newName: string) => {
   const newTag = new Tag({
     id: genTagId(),
     tagName: newName,
-    createAt: new Date(),
+    createdAt: new Date(),
   })
   return newTag.save()
 }
 
-const updateTagById = async ({
+const updateOneById = async ({
   id,
   newName,
 }: {
@@ -102,7 +105,7 @@ const updateTagById = async ({
 }) => {
   const findTag = await Tag.findOne({ id })
   if (!findTag) {
-    failure.cantFindById({ type: 'tag', id })
+    failure.cantFindByField({ type: 'tag', id, field: 'id' })
     return
   }
 
@@ -124,7 +127,7 @@ const updateTagById = async ({
 const deleteTagById = async (id: string) => {
   const findTag = await Tag.findOne({ id })
   if (!findTag) {
-    failure.cantFindById({ type: 'tag', id })
+    failure.cantFindByField({ type: 'tag', id, field: 'id' })
     return
   }
 
@@ -147,7 +150,7 @@ export async function updateTagByTagNameList(
   for (const tagName of tagNameList) {
     if (isRemove === false) {
       const hasTag = await Tag.findOne({ tagName }, { tagName: 1 })
-      if (!hasTag) await addTag(tagName)
+      if (!hasTag) await addOne(tagName)
     }
 
     const ops = isRemove
@@ -158,9 +161,9 @@ export async function updateTagByTagNameList(
 }
 
 export const DBtag = {
-  getBlogsByTagName,
-  getAllTag,
-  addTag,
-  updateTagById,
+  getBlogsByName,
+  findAll,
+  addOne,
+  updateOneById,
   deleteTagById,
 }
