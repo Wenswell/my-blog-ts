@@ -1,5 +1,7 @@
-import request from '@/utils/require'
+import request, { baseURL } from '@/utils/require'
 import { AxiosResponse } from 'axios'
+
+export { baseURL }
 
 export interface IBlogPrew {
   id: string
@@ -11,7 +13,17 @@ export interface IBlogPrew {
   editAt: string
   descImg: string
 }
-
+export interface IAddAnBlog {
+  title: string
+  description: string
+  categoryName: string
+  tagNameList: string[]
+  content: string
+  descImg?: string
+}
+export interface IEditAnBlog extends IAddAnBlog {
+  id: string
+}
 export interface IBlogDetail extends IBlogPrew {
   content: string
 }
@@ -64,12 +76,27 @@ interface IVerifyAndGetTokenParams {
   password: string
 }
 
+export async function uploadImg(obj: object) {
+  const safsdf = await request('/files/upload', 'post', obj, true)
+  return safsdf
+}
+
 export async function searchBlogs(obj: ISearchBlogParams) {
   return await request('/blog', 'get', obj)
 }
 
+export async function addAnBlog(obj: IAddAnBlog) {
+  return await request('/blog/add', 'post', obj)
+}
+
+export async function updateAnBlog(obj: IEditAnBlog) {
+  return await request('/blog/update', 'put', obj)
+}
+
 export async function getCateg() {
-  return await request('/categ', 'get')
+  const asdfs = await request('/categ', 'get')
+  console.log('getCateggetCateg', asdfs)
+  return asdfs
 }
 
 export async function getTag() {
@@ -92,8 +119,27 @@ export async function delBlogById(obj: { id: string }) {
   return await request('/blog/delete', 'delete', obj)
 }
 
+export async function delTagById(obj: { id: string }) {
+  return await request('/tag/delete', 'delete', obj)
+}
+
+export async function delCategById(obj: { id: string }) {
+  return await request('/categ/delete', 'delete', obj)
+}
+
 export async function verifyAndGetToken(obj: IVerifyAndGetTokenParams) {
   return await request('/login', 'post', obj)
+}
+
+export async function updateTagById(obj: { id: string; tagName: string }) {
+  return await request('/tag/update', 'put', obj)
+}
+
+export async function updateCategById(obj: {
+  id: string
+  categoryName: string
+}) {
+  return await request('/categ/update', 'put', obj)
 }
 
 // export default function blogSearch({

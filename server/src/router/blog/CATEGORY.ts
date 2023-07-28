@@ -3,6 +3,7 @@ import { send } from '@/utils/sendRes'
 import { Router } from 'express'
 import Joi from 'joi'
 import asyncHandler from 'express-async-handler'
+import { clearCache } from './BLOG'
 
 const AddCategSchema = Joi.object({
   categoryName: Joi.string().required().min(2).max(30),
@@ -144,6 +145,8 @@ router.post(
         categoryName: string
       }
 
+      clearCache()
+
       await send.isSuccess(res, { id, categoryName })
     } catch (error) {
       send.isMongoError(res, error as object)
@@ -169,6 +172,8 @@ router.put(
         id: updateCategoryId,
         newName: updateCategoryName,
       })
+
+      clearCache()
 
       await send.isSuccess(res, updateResult)
     } catch (error) {
@@ -198,6 +203,8 @@ router.delete(
         id: string
         categoryName: string
       }
+
+      clearCache()
 
       // await send.isSuccess(res, { huioadfgyihou });
       await send.isSuccess(res, {

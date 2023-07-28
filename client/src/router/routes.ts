@@ -94,6 +94,16 @@ export const constantRoutes = [
         component: () => import('@/views/dash/dash-articles.vue'),
       },
       {
+        path: 'writing',
+        name: 'DWriting',
+        component: () => import('@/views/dash/dash-writing.vue'),
+      },
+      {
+        path: 'editing/:id',
+        name: 'DEditing',
+        component: () => import('@/views/dash/dash-editing.vue'),
+      },
+      {
         path: 'categories',
         name: 'Dcategories',
         component: () => import('@/views/dash/dash-categories.vue'),

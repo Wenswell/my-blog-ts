@@ -1,14 +1,16 @@
 <template>
-  <button @click="dialog?.show()">show</button>
-  <button @click="dialog?.showModal()">showModal</button>
+  <div>
+    <button @click="dialog?.show()">show</button>
+    <button @click="dialog?.showModal()">showModal</button>
 
-  <dialog ref="dialog">
-    <form method="dialog">
-      <input type="text" />
-      <button @click="dialog?.close()">close</button>
-      <button type="submit">Submit</button>
-    </form>
-  </dialog>
+    <dialog ref="dialog">
+      <form method="dialog">
+        <input type="text" />
+        <button @click="dialog?.close()">close</button>
+        <button type="submit">Submit</button>
+      </form>
+    </dialog>
+  </div>
 </template>
 
 <script setup lang="ts">

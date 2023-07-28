@@ -3,6 +3,7 @@ import { send } from '@/utils/sendRes'
 import { Router } from 'express'
 import Joi from 'joi'
 import asyncHandler from 'express-async-handler'
+import { clearCache } from './BLOG'
 
 const AddTagSchema = Joi.object({
   tagName: Joi.string().required().min(2).max(30),
@@ -143,6 +144,8 @@ router.post(
         tagName: string
       }
 
+      clearCache()
+
       await send.isSuccess(res, { id, tagName })
     } catch (error) {
       send.isMongoError(res, error as object)
@@ -171,6 +174,8 @@ router.put(
 
       if (!updateResult) throw 'updateOneById failed'
 
+      clearCache()
+
       await send.isSuccess(res, updateResult)
     } catch (error) {
       send.isCustomError(res, error as object)
@@ -195,6 +200,8 @@ router.delete(
         id: string
         tagName: string
       }
+
+      clearCache()
 
       await send.isSuccess(res, { deletedId: id, deletedTagName: tagName })
     } catch (error) {

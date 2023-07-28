@@ -42,7 +42,12 @@
       </footer>
     </div>
     <div class="aside">
-      <button class="edit effect">修改</button>
+      <button
+        @click="router.push('/dash/editing/' + post.id)"
+        class="edit effect"
+      >
+        修改
+      </button>
       <button
         @click="emits('handleClick', { id: post.id, title: post.title })"
         class="delete effect"
@@ -54,6 +59,7 @@
 </template>
 
 <script setup lang="ts">
+import router from '@/router'
 import * as dayjs from 'dayjs'
 
 const formatTimestamp = (timestamp: string) => {

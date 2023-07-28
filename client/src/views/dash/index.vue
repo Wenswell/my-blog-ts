@@ -7,7 +7,7 @@
           <span>后台管理</span>
         </h2>
         <ul>
-          <li v-for="item in navList" :key="item.path">
+          <li v-for="item in showList" :key="item.path">
             <button
               :class="{ active: isCurrent(item.path) }"
               class="nav-item"
@@ -65,11 +65,24 @@ const route = useRoute()
 const navList = [
   { path: '/dash/home', label: '首页', icon: 'ri-home-2-line' },
   { path: '/dash/articles', label: '文章管理', icon: 'ri-article-line' },
+  { path: '/dash/writing', label: '新增文章', icon: 'ri-edit-2-line' },
+  { path: '/dash/editing', label: '修改文章', icon: 'ri-edit-box-line' },
   { path: '/dash/categories', label: '分类管理', icon: 'ri-folder-5-line' },
   { path: '/dash/tags', label: '标签管理', icon: 'ri-price-tag-3-line' },
-  { path: '/dash/account', label: '账户管理', icon: 'ri-account-circle-line' },
+  // { path: '/dash/account', label: '账户管理', icon: 'ri-account-circle-line' },
 ]
+
+const showList = [
+  { path: '/dash/home', label: '首页', icon: 'ri-home-2-line' },
+  { path: '/dash/articles', label: '文章管理', icon: 'ri-article-line' },
+  { path: '/dash/writing', label: '新增文章', icon: 'ri-edit-2-line' },
+  { path: '/dash/categories', label: '分类管理', icon: 'ri-folder-5-line' },
+  { path: '/dash/tags', label: '标签管理', icon: 'ri-price-tag-3-line' },
+  // { path: '/dash/account', label: '账户管理', icon: 'ri-account-circle-line' },
+]
+
 const getPosition = computed(() => {
+  if (route.name == 'DEditing') return '修改文章'
   return navList.find((item) => item.path === route.path)?.label
 })
 
@@ -121,7 +134,7 @@ const toggleSidebar = () => {
   position: sticky;
   top: 0;
   height: 100dvh;
-  width: 8rem;
+  min-width: 8rem;
   // @include white_bg_unset_txt;
   // 只有暗色
   background-color: $dark-bg-sub;
@@ -199,6 +212,7 @@ const toggleSidebar = () => {
   }
 
   &.folded {
+    min-width: 3rem;
     .nav-item {
       transition: all 200ms;
       border: 0;

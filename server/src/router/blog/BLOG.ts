@@ -57,6 +57,11 @@ const cacheMap = new Map<string, object>()
 // 缓存key集合,用于记录缓存访问顺序
 const cacheKeySet = new Set()
 
+function clearCache() {
+  cacheKeySet.clear()
+  cacheMap.clear()
+}
+
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -279,5 +284,7 @@ router.delete(
     }
   }),
 )
+
+export { clearCache }
 
 export default router
