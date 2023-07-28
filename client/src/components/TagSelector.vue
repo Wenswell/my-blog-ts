@@ -80,35 +80,29 @@ watchEffect(() => {
   emits('update:articletag', [...preTagSet.value])
 })
 const inputBlur = () => {
-  console.log('inputBlur', inputBlur)
   setTimeout(() => {
     addTagInput.value?.blur()
     isAddNew.value = false
   }, 100) //保证先触发clickOption点击事件
 }
 const upSelect = () => {
-  console.log('upSelect', upSelect)
   selectTagIndex.value = --selectTagIndex.value >= 0 ? selectTagIndex.value : 0
 }
 const downSelect = () => {
-  console.log('downSelect', downSelect)
   selectTagIndex.value =
     ++selectTagIndex.value >= matchTags.value.length - 1
       ? matchTags.value.length - 1
       : selectTagIndex.value
 }
 const hoverOption = (index: number) => {
-  console.log('hoverOption', hoverOption)
   selectTagIndex.value = index
 }
 const clickOption = () => {
-  console.log('clickOption', clickOption)
   isAddNew.value = false
   preTagSet.value.add(matchTags.value[selectTagIndex.value])
   preTag.value = ''
 }
 const enterSelect = () => {
-  console.log('enterSelect', enterSelect)
   isAddNew.value = false
   preTagSet.value.add(
     matchTags.value[selectTagIndex.value]

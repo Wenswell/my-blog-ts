@@ -17,7 +17,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   console.log('to', to)
   console.log('from', from)
-  window.history.scrollRestoration = 'auto'
+  // window.history.scrollRestoration = 'auto'
   if (to.params) {
     Object.keys(to.params).forEach((key) => {
       const value = to.params[key] as string
@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
   }
   if (to.name !== from.name) {
     // 设置滚动条在顶部
-    window.scrollTo(0, 0)
+    // window.scrollTo(0, 0)
   }
   next()
 })

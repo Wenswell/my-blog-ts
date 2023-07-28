@@ -81,6 +81,7 @@ let timeout = 100
 
 const scrollToTarget = () => {
   const target = document.querySelector('.search-info')
+  console.log("target", target)
   // const navHeight = document.querySelector('header')?.offsetHeight
   // console.log('navHeight', navHeight)
   // console.log('navHeight', navHeight)
@@ -117,6 +118,8 @@ const onSearch = () => {
 }
 
 const handleSearch = async () => {
+  window.scrollTo(0, 0)
+
   loading.value = true
   const now = Date.now()
   if (now - lastSearchTime > timeout) {
@@ -135,6 +138,9 @@ watchEffect(() => {
   keyword.value = route.query.keyword as string
   handleSearch()
 })
+// onMounted(()=>{
+//   window.scrollTo(0, 0)
+// })
 </script>
 
 <style lang="scss" scoped>

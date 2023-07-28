@@ -129,6 +129,7 @@ const scrollToTarget = () => {
   } as any)
 }
 const handleSearch = async () => {
+  window.scrollTo(0, 0)
   loading.value = true
   const { data } = await searchBlogs(route.query)
   blogs.value = data.blogs

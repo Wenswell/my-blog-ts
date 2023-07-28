@@ -19,6 +19,17 @@
               <span>{{ item.label }}</span>
             </button>
           </li>
+          <li>
+            <button
+              class="nav-item"
+              @click="logout"
+              title="退出"
+              aria-label="退出登录"
+            >
+              <i class="ri-logout-box-line"></i>
+              <span>退出</span>
+            </button>
+          </li>
         </ul>
       </aside>
 
@@ -94,8 +105,13 @@ const toPath = (path: string) => {
   target?.scrollTo({
     top: 0,
     left: 0,
-    // behavior: 'smooth'
+    behavior: 'smooth'
   })
+}
+
+const logout = ()=>{
+  document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;'
+  router.push('/login')
 }
 
 const getTitle = (item: { path: string; label: string }) => {

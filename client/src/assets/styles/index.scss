@@ -178,7 +178,7 @@ button.mild-effect {
 
 .route-enter-from,
 .abso-enter-from {
-  opacity: 0.2;
+  opacity: 0;
   filter: blur(3px);
   // transform: translateY(60px);
 }
@@ -186,19 +186,21 @@ button.mild-effect {
 .route-leave-to,
 .abso-leave-to {
   opacity: 0;
+  display: none;
   // filter: blur(10px);
   // transform: translateX(-100px);
 }
 
 .route-enter-active,
 .abso-enter-active {
-  transition: opacity 400ms, filter 300ms;
+  transition: opacity 400ms 100ms, filter 300ms;
 }
 .route-leave-active {
+  display: none;
   // position: absolute;
-  transition: opacity 200ms, filter 200ms;
+  // transition: opacity 200ms, filter 200ms;
 }
 // .abso-leave-active {
-//   position: absolute;
+  // position: absolute;
 //   transition: opacity 200ms, filter 200ms;
 // }

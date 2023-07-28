@@ -18,7 +18,6 @@ export default function request(
   // 请求拦截
   AxiosInstance.interceptors.request.use(
     (config) => {
-      console.log('config', config)
       // 获取token
       const token = document.cookie
         .split('; ')

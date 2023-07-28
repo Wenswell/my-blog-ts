@@ -2,45 +2,27 @@
   <transition-group appear name="login-form">
     <form key="1" @submit.prevent="onSubmit">
       <fieldset>
-        <legend>登录</legend>
+        <legend>
+          <span class="legend">登录</span>
+          <button type="button" @click="router.push('/')" class="exit"><i class="ri-logout-box-line"></i> 回到主页</button>
+        </legend>
 
         <label class="input">
-          <input
-            class="input_field"
-            v-model="formValue.account"
-            :pattern="info.account.regex"
-            :title="info.account.err"
-            required
-            :type="info.account.type"
-            :autocomplete="info.account.autocomplete"
-            :aria-invalid="accountError"
-            :aria-describedby="info.account.err"
-            placeholder=" "
-          />
+          <input class="input_field" v-model="formValue.account" :pattern="info.account.regex" :title="info.account.err"
+            required :type="info.account.type" :autocomplete="info.account.autocomplete" :aria-invalid="accountError"
+            :aria-describedby="info.account.err" placeholder=" " />
           <span class="input_label">输入账号</span>
         </label>
 
         <label class="input">
-          <input
-            class="input_field"
-            v-model="formValue.password"
-            :pattern="info.password.regex"
-            :title="info.password.err"
-            required
-            :type="info.password.type"
-            :autocomplete="info.password.autocomplete"
-            :aria-invalid="passwordError"
-            :aria-describedby="info.password.err"
-            placeholder=" "
-          />
+          <input class="input_field" v-model="formValue.password" :pattern="info.password.regex"
+            :title="info.password.err" required :type="info.password.type" :autocomplete="info.password.autocomplete"
+            :aria-invalid="passwordError" :aria-describedby="info.password.err" placeholder=" " />
           <span class="input_label">输入密码</span>
         </label>
 
-        <button
-          class="submit effect"
-          :class="{ invalid: accountError || passwordError }"
-          :aria-disabled="accountError || passwordError"
-        >
+        <button class="submit effect" :class="{ invalid: accountError || passwordError }"
+          :aria-disabled="accountError || passwordError">
           登录
         </button>
         <button class="submit effect" @click="fillAdmin">
@@ -102,9 +84,8 @@ const onSubmit = async () => {
     const verifyRes = (await verifyAndGetToken(formValue)) as NormalResult
 
     const cookieExpirationDate = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
-    document.cookie = `token=${
-      verifyRes.data.token
-    };expires=${cookieExpirationDate.toUTCString()};path=/`
+    document.cookie = `token=${verifyRes.data.token
+      };expires=${cookieExpirationDate.toUTCString()};path=/`
 
     popupRef.value?.notice.success(`[${verifyRes.data.account}]登陆成功`)
     setTimeout(() => {
@@ -174,16 +155,31 @@ fieldset {
   flex-direction: column;
   gap: $gap-l;
   padding-block: $gap-l;
+  position: relative;
 
   legend {
     max-width: 4rem;
     word-break: keep-all;
     // 以上样式用于适应Safari
+    display: flex;
+    align-items: center;
+    gap: $gap;
     font-size: $fz-xl;
     padding: $gap-s;
     margin-left: $gap;
     box-shadow: 0 0 0 5px;
     @include prime_bg_white_txt;
+
+    .exit {
+      position: absolute;
+      right: 5%;
+      zoom: 0.5;
+      @include prime_bg_white_txt;
+
+      &:where(:hover, :focus-visible) {
+        @include mild_bg_prime_txt;
+      }
+    }
   }
 }
 
