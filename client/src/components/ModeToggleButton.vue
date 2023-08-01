@@ -97,7 +97,8 @@ $btn-height: 1rem;
 
 button.change-mode {
   padding-block: 0;
-  zoom: 1.25;
+  // zoom: 1.25;
+  transform: scale(1.25);
   width: $btn-width;
   height: $btn-height;
   border-radius: 1em;

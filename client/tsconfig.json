@@ -8,6 +8,7 @@
     "moduleResolution": "node",
     // Modern bundlers understand the file extension not being present.
     // "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true, //https://github.com/iamkun/dayjs/issues/475
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,

@@ -105,11 +105,11 @@ const toPath = (path: string) => {
   target?.scrollTo({
     top: 0,
     left: 0,
-    behavior: 'smooth'
+    behavior: 'smooth',
   })
 }
 
-const logout = ()=>{
+const logout = () => {
   document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;'
   router.push('/login')
 }

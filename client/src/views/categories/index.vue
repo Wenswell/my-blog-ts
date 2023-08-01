@@ -130,7 +130,7 @@ const safeName: ComputedRef<string> = computed(() => {
 })
 
 const handleSearch = async () => {
-  window.scrollTo(0, 0)
+  // window.scrollTo(0, 0)
   loading.value = true
   // const now = Date.now()
   // if (now - lastSearchTime > timeout) {
@@ -174,6 +174,10 @@ watchEffect(() => {
 </script>
 
 <style lang="scss" scoped>
+
+ul{
+  list-style: none;
+}
 aside {
   margin-inline: $gap-s;
   // position: sticky;

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const serverURL = 'http://192.168.1.5:7333/'
-// const serverURL = 'http://localhost:7333/'
+const serverURL = 'https://wswensw.top/api'
+// const serverURL = 'http://124.221.124.116:8081'
 
 axios.defaults.baseURL = serverURL
 

@@ -50,8 +50,6 @@
       <time
         v-if="post.editAt"
         :datetime="post.editAt"
-        :title="'更新时间: ' + rnFormatTS(post.editAt)"
-        :aria-label="'更新时间: ' + rnFormatTS(post.editAt)"
       >
         (updated {{ formatTimestamp(post.editAt) }})
       </time>
@@ -60,7 +58,11 @@
 </template>
 
 <script setup lang="ts">
-import * as dayjs from 'dayjs'
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
+
 
 const formatTimestamp = (timestamp: string) => {
   const now = dayjs()
@@ -70,8 +72,10 @@ const formatTimestamp = (timestamp: string) => {
   return date.format(formatString)
 }
 
-const rnFormatTS = (ts: string) => {
-  return dayjs(ts).format('YYYY-MM-DD HH:mm:ss')
+function rnFormatTS(ts: string) {
+  console.log("dayjs", dayjs)
+  console.log("dayjs(ts)", dayjs(ts))
+return dayjs(ts).format('YYYY-MM-DD HH:mm:ss');
 }
 
 interface Post {

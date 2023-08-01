@@ -46,7 +46,7 @@ const navList = [
   { path: '/articles', label: '文章' },
   { path: '/categories', label: '分类' },
   { path: '/tags', label: '标签' },
-  { path: '/about', label: '关于' },
+  { path: '/about', label: '简历' },
   { path: '/login', label: '后台' },
 ]
 </script>
@@ -69,7 +69,11 @@ header {
   position: sticky;
   top: 0;
   z-index: 10;
-  @include white_black_bg_unset_txt;
+  @include white_bg_unset_txt;
+  .logo{
+    @include white_bg_unset_txt;
+    
+  }
 }
 
 input {

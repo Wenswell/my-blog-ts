@@ -2,10 +2,12 @@
 
 import axios from 'axios'
 
-export const baseURL = 'http://192.168.1.5:7333'
+// export const baseURL = 'http://192.168.1.5:7333'
+// export const baseURL = 'http://124.221.124.116:8081'
+export const baseURL = 'https://wswensw.top/api'
 
 const AxiosInstance = axios.create({
-  baseURL: 'http://192.168.1.5:7333',
+  baseURL,
   timeout: 5000,
 })
 

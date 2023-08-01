@@ -8,9 +8,35 @@
 <script setup lang="ts">
 import { getCateg, getTag, ICategItem, ITagItem } from '@/api/index'
 import { onMounted, ref } from 'vue'
-import * as echarts from "echarts";
-import router from '@/router';
-type EChartsOption = echarts.EChartsOption
+import * as echarts from 'echarts/core';
+import {
+  TitleComponent,
+  TitleComponentOption,
+  TooltipComponent,
+  TooltipComponentOption,
+  LegendComponent,
+  LegendComponentOption
+} from 'echarts/components';
+import { PieChart, PieSeriesOption } from 'echarts/charts';
+import { LabelLayout } from 'echarts/features';
+import { SVGRenderer } from 'echarts/renderers';
+
+import router from '@/router'
+type EChartsOption = echarts.ComposeOption<
+  | TitleComponentOption
+  | TooltipComponentOption
+  | LegendComponentOption
+  | PieSeriesOption
+>;
+
+echarts.use([
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  PieChart,
+  SVGRenderer,
+  LabelLayout
+]);
 const echartCateg = ref<HTMLElement | null>(null)
 const echartTag = ref<HTMLElement | null>(null)
 const categList = ref<ICategItem[]>([])
@@ -40,42 +66,42 @@ const createCharts = (theme = MODE.value) => {
   }
   const links = <object[]>[]
   const blogName = 'blog'
-  categList.value.forEach(t => {
+  categList.value.forEach((t) => {
     DataCateg.legendData.push({
-      name: t.categoryName
+      name: t.categoryName,
     })
     DataCateg.seriesData.push({
       value: t.count,
-      name: t.categoryName
+      name: t.categoryName,
     })
     links.push({
       source: t.categoryName,
       target: blogName,
-      value: t.count
+      value: t.count,
     })
   })
-  tagList.value.forEach(t => {
+  tagList.value.forEach((t) => {
     DataTag.legendData.push({
-      name: t.tagName
+      name: t.tagName,
     })
     DataTag.seriesData.push({
       value: t.count,
-      name: t.tagName
+      name: t.tagName,
     })
     links.push({
       source: blogName,
       target: t.tagName,
-      value: t.count
+      value: t.count,
     })
   })
   const optionCateg: EChartsOption = {
     title: {
       text: '文章分类统计',
-      left: 'center'
+      left: 'center',
     },
     tooltip: {
       trigger: 'item',
-      formatter: '{a}「{b}」<br/> {c} 篇文章 ({d}%)'
+      formatter: '{a}「{b}」<br/> {c} 篇文章 ({d}%)',
     },
     legend: {
       type: 'scroll',
@@ -83,7 +109,7 @@ const createCharts = (theme = MODE.value) => {
       right: 10,
       top: 20,
       bottom: 20,
-      data: DataCateg.legendData
+      data: DataCateg.legendData,
     },
     series: [
       {
@@ -96,20 +122,20 @@ const createCharts = (theme = MODE.value) => {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
-  };
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+      },
+    ],
+  }
   const optionTag: EChartsOption = {
     title: {
       text: '文章标签统计',
-      left: 'center'
+      left: 'center',
     },
     tooltip: {
       trigger: 'item',
-      formatter: '{a}「{b}」<br/> {c} 篇文章 ({d}%)'
+      formatter: '{a}「{b}」<br/> {c} 篇文章 ({d}%)',
     },
     legend: {
       type: 'scroll',
@@ -117,7 +143,7 @@ const createCharts = (theme = MODE.value) => {
       right: 10,
       top: 20,
       bottom: 20,
-      data: DataTag.legendData
+      data: DataTag.legendData,
     },
     series: [
       {
@@ -130,12 +156,12 @@ const createCharts = (theme = MODE.value) => {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
-  };
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+      },
+    ],
+  }
 
   let categChart = echarts.init(echartCateg.value, theme, { renderer: 'svg' })
   categChart.dispose()
@@ -143,8 +169,10 @@ const createCharts = (theme = MODE.value) => {
 
   categChart.setOption({ ...optionCateg })
   categChart.on('click', function (params) {
-    router.push('/dash/articles?categoryName=' + encodeURIComponent(params.name))
-  });
+    router.push(
+      '/dash/articles?categoryName=' + encodeURIComponent(params.name),
+    )
+  })
   let tagChart = echarts.init(echartTag.value, theme, { renderer: 'svg' })
   tagChart.dispose()
   tagChart = echarts.init(echartTag.value, theme, { renderer: 'svg' })
@@ -152,7 +180,7 @@ const createCharts = (theme = MODE.value) => {
   tagChart.setOption({ ...optionTag })
   tagChart.on('click', function (params) {
     router.push('/dash/articles?tagNameList=' + encodeURIComponent(params.name))
-  });
+  })
 }
 
 Store.$subscribe((_mutation, state) => {
@@ -161,9 +189,7 @@ Store.$subscribe((_mutation, state) => {
 onMounted(async () => {
   await getCategTagList()
   createCharts()
-
 })
-
 </script>
 
 <style lang="scss" scoped>
@@ -186,6 +212,5 @@ onMounted(async () => {
     width: 95%;
     max-width: 95%;
   }
-
 }
 </style>

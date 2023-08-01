@@ -26,18 +26,14 @@
       <footer>
         <time
           :datetime="post.postAt"
-          :title="'发布时间: ' + rnFormatTS(post.postAt)"
-          :aria-label="'发布时间: ' + rnFormatTS(post.postAt)"
         >
-          {{ formatTimestamp(post.postAt) }}
+          <!-- {{ formatTimestamp(post.postAt) }} -->
         </time>
         <time
           v-if="post.editAt"
           :datetime="post.editAt"
-          :title="'更新时间: ' + rnFormatTS(post.editAt)"
-          :aria-label="'更新时间: ' + rnFormatTS(post.editAt)"
         >
-          (updated {{ formatTimestamp(post.editAt) }})
+          <!-- (updated {{ formatTimestamp(post.editAt) }}) -->
         </time>
       </footer>
     </div>
@@ -60,19 +56,19 @@
 
 <script setup lang="ts">
 import router from '@/router'
-import * as dayjs from 'dayjs'
+// import * as dayjs from 'dayjs'
 
-const formatTimestamp = (timestamp: string) => {
-  const now = dayjs()
-  const date = dayjs(timestamp)
-  const formatString = now.year() === date.year() ? 'D MMM' : 'D MMM YYYY'
-  // const formatString = now.year() === date.year() ? 'MMM D' : 'YYYY MMM D';
-  return date.format(formatString)
-}
+// const formatTimestamp = (timestamp: string) => {
+//   const now = dayjs()
+//   const date = dayjs(timestamp)
+//   const formatString = now.year() === date.year() ? 'D MMM' : 'D MMM YYYY'
+//   // const formatString = now.year() === date.year() ? 'MMM D' : 'YYYY MMM D';
+//   return date.format(formatString)
+// }
 
-const rnFormatTS = (ts: string) => {
-  return dayjs(ts).format('YYYY-MM-DD HH:mm:ss')
-}
+// const rnFormatTS = (ts: string) => {
+//   return dayjs(ts).format('YYYY-MM-DD HH:mm:ss')
+// }
 
 interface Post {
   id: string

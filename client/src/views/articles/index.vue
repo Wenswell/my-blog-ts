@@ -81,7 +81,7 @@ let timeout = 100
 
 const scrollToTarget = () => {
   const target = document.querySelector('.search-info')
-  console.log("target", target)
+  console.log('target', target)
   // const navHeight = document.querySelector('header')?.offsetHeight
   // console.log('navHeight', navHeight)
   // console.log('navHeight', navHeight)

@@ -183,6 +183,9 @@ const makePage = computed(() => {
 </script>
 
 <style lang="scss" scoped>
+ul{
+  list-style: none;
+}
 .pagination {
   width: 100%;
   display: grid;
