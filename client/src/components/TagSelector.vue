@@ -62,12 +62,18 @@ const preTag = ref('')
 const matchTags = ref<string[]>([])
 const selectTagIndex = ref(1)
 
-defineProps({
+const props = defineProps({
   articletag: {
     required: true,
   },
 })
 const emits = defineEmits(['update:articletag'])
+
+watchEffect(()=>{
+  (props.articletag as string[]).forEach(element => {
+    preTagSet.value.add(element)
+  });
+})
 
 watchEffect(() => {
   matchTags.value = preTag.value
@@ -121,6 +127,11 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 .tag-box {
   display: flex;
   flex-wrap: wrap;
